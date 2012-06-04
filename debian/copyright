@@ -6,47 +6,45 @@ Comment: The upstream tarball has been repacked in order to remove the bundled
  xmlParser (not used).
 
 Files: *
-Copyright: 2007-2011, iMatix Corporation
+Copyright: 2009-2011, 250bpm s.r.o
+ 2007-2011, iMatix Corporation
  2007-2011, Other contributors as noted in the AUTHORS file
 License: LGPL-3.0+
 
-Files: tests/test_timeo.cpp
-Copyright: 2010-2011, Other contributors as noted in the AUTHORS file
- 2010-2011, 250bpm s.r.o
+Files: src/xreq.cpp
+ src/xpub.cpp
+ src/xsub.cpp
+ tests/test_reqrep_device.cpp
+ tests/test_invalid_rep.cpp
+Copyright: 2010-2011, 250bpm s.r.o
+ 2011, VMware, Inc
+ 2010-2011, Other contributors as noted in the AUTHORS file
 License: LGPL-3.0+
 
-Files: src/gcc_421_char_traits.hpp
-Copyright: 1997-2005, Free Software Foundation, Inc.
-License: 
- This file is part of the GNU ISO C++ Library.  This library is free
- software; you can redistribute it and/or modify it under the
- terms of the GNU General Public License as published by the
- Free Software Foundation; either version 2, or (at your option)
- any later version.
- .
- This library is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- .
- You should have received a copy of the GNU General Public License along
- with this library; see the file COPYING.  If not, write to the Free
- Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
- USA.
- .
- As a special exception, you may use this file as part of a free software
- library without restriction.  Specifically, if other files instantiate
- templates or use macros or inline functions from this file, or you compile
- this file and link it with other files to produce an executable, this
- file does not by itself cause the resulting executable to be covered by
- the GNU General Public License.  This exception does not however
- invalidate any other reasons why the executable file might be covered by
- the GNU General Public License.
+Files: src/msg.hpp
+ src/xrep.*
+ src/options.*
+ src/req.*
+ src/socket_base.*
+ src/pipe.*
+ src/encoder.cpp
+ src/lb.cpp
+ src/session_base.*
+ src/fq.cpp
+ include/zmq.h
+Copyright: 2009-2011, 250bpm s.r.o
+ 2007-2009, iMatix Corporation
+ 2011, VMware, Inc
+ 2007-2011, Other contributors as noted in the AUTHORS file
+License: LGPL-3.0+
 
-Files: src/trie.*
-Copyright: 2007-2011, iMatix Corporation
- 2007-2011 Other contributors as noted in the AUTHORS file
- 2011-2012, Spotify AB
+Files: src/pgm_receiver.*
+ src/pgm_sender.*
+ src/pgm_socket.*
+Copyright: 2009-2011, 250bpm s.r.o
+ 2007-2009, iMatix Corporation
+ 2010-2011, Miru Limited
+ 2007-2011, Other contributors as noted in the AUTHORS file
 License: LGPL-3.0+
 
 Files: debian/*
