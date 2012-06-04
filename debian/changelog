@@ -1,11 +1,12 @@
-zeromq3 (3.1.0~beta+dfsg-1) UNRELEASED; urgency=low
+zeromq3 (3.1.0~beta+dfsg-1) experimental; urgency=low
 
   * Initial ZeroMQ v3 packaging (Closes: #661503)
     - Update get-orig-source rule and watch file
     - Rename binary packages to new SONAME
     - Update Vcs-* headers too
+    - Update copyright file
 
- -- Alessandro Ghedini <ghedo@debian.org>  Sun, 03 Jun 2012 19:51:50 +0200
+ -- Alessandro Ghedini <ghedo@debian.org>  Mon, 04 Jun 2012 21:21:09 +0200
 
 zeromq (2.2.0+dfsg-2) unstable; urgency=low
 
