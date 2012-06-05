@@ -31,6 +31,7 @@ Package: libzmq3-dev
 Architecture: any
 Section: libdevel
 Depends: libzmq3 (= ${binary:Version}), ${misc:Depends}
+Conflicts: libzmq-dev
 Multi-Arch: same
 Description: lightweight messaging kernel (development files)
  ØMQ is a library which extends the standard socket interfaces with features
