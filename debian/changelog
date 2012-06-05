@@ -1,3 +1,9 @@
+zeromq3 (3.1.0~beta+dfsg-2) experimental; urgency=low
+
+  * libzmq3-dev Conflicts with libzmq-dev (Closes: #676160)
+
+ -- Alessandro Ghedini <ghedo@debian.org>  Tue, 05 Jun 2012 09:29:58 +0200
+
 zeromq3 (3.1.0~beta+dfsg-1) experimental; urgency=low
 
   * Initial ZeroMQ v3 packaging (Closes: #661503)
