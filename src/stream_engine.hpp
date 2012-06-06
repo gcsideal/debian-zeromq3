@@ -30,6 +30,7 @@
 #include "encoder.hpp"
 #include "decoder.hpp"
 #include "options.hpp"
+#include "../include/zmq.h"
 
 namespace zmq
 {
@@ -50,7 +51,6 @@ namespace zmq
         //  i_engine interface implementation.
         void plug (zmq::io_thread_t *io_thread_,
            zmq::session_base_t *session_);
-        void unplug ();
         void terminate ();
         void activate_in ();
         void activate_out ();
@@ -60,6 +60,9 @@ namespace zmq
         void out_event ();
 
     private:
+
+        //  Unplug the engine from the session.
+        void unplug ();
 
         //  Function to handle network disconnections.
         void error ();
@@ -83,6 +86,7 @@ namespace zmq
         unsigned char *inpos;
         size_t insize;
         decoder_t decoder;
+        bool input_error;
 
         unsigned char *outpos;
         size_t outsize;
@@ -95,6 +99,9 @@ namespace zmq
         zmq::session_base_t *leftover_session;
 
         options_t options;
+
+        // String representation of endpoint
+        std::string endpoint;
 
         bool plugged;
 

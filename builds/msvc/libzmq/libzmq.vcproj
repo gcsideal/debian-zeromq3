@@ -42,6 +42,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-DDLL_EXPORT -DFD_SETSIZE=1024 -D_CRT_SECURE_NO_WARNINGS"
 				Optimization="0"
+				PreprocessorDefinitions="NOMINMAX"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -247,6 +248,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\..\..\src\address.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\src\clock.cpp"
 				>
 			</File>
@@ -255,7 +260,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\src\dealer.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\src\decoder.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\src\device.cpp"
 				>
 			</File>
 			<File
@@ -276,6 +289,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\src\err.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\errno.cpp"
 				>
 			</File>
 			<File
@@ -395,6 +412,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\src\router.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\src\select.cpp"
 				>
 			</File>
@@ -443,14 +464,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\src\xrep.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\src\xreq.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\src\xsub.cpp"
 				>
 			</File>
@@ -468,6 +481,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath="..\..\..\src\address.hpp"
+				>
+			</File>
 			<File
 				RelativePath="..\..\..\src\array.hpp"
 				>
@@ -518,6 +535,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\src\err.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\errno.hpp"
 				>
 			</File>
 			<File

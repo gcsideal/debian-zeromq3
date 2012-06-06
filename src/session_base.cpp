@@ -20,6 +20,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <stdarg.h>
+
 #include "session_base.hpp"
 #include "socket_base.hpp"
 #include "i_engine.hpp"
@@ -30,11 +32,12 @@
 #include "ipc_connecter.hpp"
 #include "pgm_sender.hpp"
 #include "pgm_receiver.hpp"
+#include "address.hpp"
 
 #include "req.hpp"
-#include "xreq.hpp"
+#include "dealer.hpp"
 #include "rep.hpp"
-#include "xrep.hpp"
+#include "router.hpp"
 #include "pub.hpp"
 #include "xpub.hpp"
 #include "sub.hpp"
@@ -45,52 +48,53 @@
 
 zmq::session_base_t *zmq::session_base_t::create (class io_thread_t *io_thread_,
     bool connect_, class socket_base_t *socket_, const options_t &options_,
-    const char *protocol_, const char *address_)
+    const address_t *addr_)
 {
     session_base_t *s = NULL;
     switch (options_.type) {
     case ZMQ_REQ:
         s = new (std::nothrow) req_session_t (io_thread_, connect_,
-            socket_, options_, protocol_, address_);
+            socket_, options_, addr_);
         break;
-    case ZMQ_XREQ:
-        s = new (std::nothrow) xreq_session_t (io_thread_, connect_,
-            socket_, options_, protocol_, address_);
+    case ZMQ_DEALER:
+        s = new (std::nothrow) dealer_session_t (io_thread_, connect_,
+            socket_, options_, addr_);
+        break;
     case ZMQ_REP:
         s = new (std::nothrow) rep_session_t (io_thread_, connect_,
-            socket_, options_, protocol_, address_);
+            socket_, options_, addr_);
         break;
-    case ZMQ_XREP:
-        s = new (std::nothrow) xrep_session_t (io_thread_, connect_,
-            socket_, options_, protocol_, address_);
+    case ZMQ_ROUTER:
+        s = new (std::nothrow) router_session_t (io_thread_, connect_,
+            socket_, options_, addr_);
         break;
     case ZMQ_PUB:
         s = new (std::nothrow) pub_session_t (io_thread_, connect_,
-            socket_, options_, protocol_, address_);
+            socket_, options_, addr_);
         break;
     case ZMQ_XPUB:
         s = new (std::nothrow) xpub_session_t (io_thread_, connect_,
-            socket_, options_, protocol_, address_);
+            socket_, options_, addr_);
         break;
     case ZMQ_SUB:
         s = new (std::nothrow) sub_session_t (io_thread_, connect_,
-            socket_, options_, protocol_, address_);
+            socket_, options_, addr_);
         break;
     case ZMQ_XSUB:
         s = new (std::nothrow) xsub_session_t (io_thread_, connect_,
-            socket_, options_, protocol_, address_);
+            socket_, options_, addr_);
         break;
     case ZMQ_PUSH:
         s = new (std::nothrow) push_session_t (io_thread_, connect_,
-            socket_, options_, protocol_, address_);
+            socket_, options_, addr_);
         break;
     case ZMQ_PULL:
         s = new (std::nothrow) pull_session_t (io_thread_, connect_,
-            socket_, options_, protocol_, address_);
+            socket_, options_, addr_);
         break;
     case ZMQ_PAIR:
         s = new (std::nothrow) pair_session_t (io_thread_, connect_,
-            socket_, options_, protocol_, address_);
+            socket_, options_, addr_);
         break;
     default:
         errno = EINVAL;
@@ -102,7 +106,7 @@ zmq::session_base_t *zmq::session_base_t::create (class io_thread_t *io_thread_,
 
 zmq::session_base_t::session_base_t (class io_thread_t *io_thread_,
       bool connect_, class socket_base_t *socket_, const options_t &options_,
-      const char *protocol_, const char *address_) :
+      const address_t *addr_) :
     own_t (io_thread_, options_),
     io_object_t (io_thread_),
     connect (connect_),
@@ -114,12 +118,9 @@ zmq::session_base_t::session_base_t (class io_thread_t *io_thread_,
     io_thread (io_thread_),
     has_linger_timer (false),
     send_identity (options_.send_identity),
-    recv_identity (options_.recv_identity)
+    recv_identity (options_.recv_identity),
+    addr (addr_)
 {
-    if (protocol_)
-        protocol = protocol_;
-    if (address_)
-        address = address_;
 }
 
 zmq::session_base_t::~session_base_t ()
@@ -135,6 +136,9 @@ zmq::session_base_t::~session_base_t ()
     //  Close the engine.
     if (engine)
         engine->terminate ();
+
+    if (addr)
+        delete addr;
 }
 
 void zmq::session_base_t::attach_pipe (pipe_t *pipe_)
@@ -151,7 +155,8 @@ int zmq::session_base_t::read (msg_t *msg_)
     //  First message to send is identity (if required).
     if (send_identity) {
         zmq_assert (!(msg_->flags () & msg_t::more));
-        msg_->init_size (options.identity_size);
+        int rc = msg_->init_size (options.identity_size);
+        errno_assert (rc == 0);
         memcpy (msg_->data (), options.identity, options.identity_size);
         send_identity = false;
         incomplete_in = false;
@@ -183,6 +188,13 @@ int zmq::session_base_t::write (msg_t *msg_)
 
     errno = EAGAIN;
     return -1;
+}
+
+void zmq::session_base_t::reset ()
+{
+    //  Restore identity flags.
+    send_identity = options.send_identity;
+    recv_identity = options.recv_identity;
 }
 
 void zmq::session_base_t::flush ()
@@ -253,6 +265,21 @@ void zmq::session_base_t::hiccuped (pipe_t *pipe_)
     zmq_assert (false);
 }
 
+int zmq::session_base_t::get_address (std::string &addr_)
+{
+    if (addr)
+        return addr->to_string (addr_);
+    return -1;
+}
+
+void zmq::session_base_t::monitor_event (int event_, ...)
+{
+    va_list args;
+    va_start (args, event_);
+    socket->monitor_event (event_, args);
+    va_end (args);
+}
+
 void zmq::session_base_t::process_plug ()
 {
     if (connect)
@@ -261,13 +288,7 @@ void zmq::session_base_t::process_plug ()
 
 void zmq::session_base_t::process_attach (i_engine *engine_)
 {
-    //  If some other object (e.g. init) notifies us that the connection failed
-    //  without creating an engine we need to start the reconnection process.
-    if (!engine_) {
-        zmq_assert (!engine);
-        detached ();
-        return;
-    }
+    zmq_assert (engine_ != NULL);
 
     //  Create the pipe if it does not exist yet.
     if (!pipe && !is_terminating ()) {
@@ -355,6 +376,7 @@ void zmq::session_base_t::proceed_with_term ()
 
 void zmq::session_base_t::timer_event (int id_)
 {
+
     //  Linger period expired. We can proceed with termination even though
     //  there are still pending messages to be sent.
     zmq_assert (id_ == linger_timer_id);
@@ -373,13 +395,16 @@ void zmq::session_base_t::detached ()
         return;
     }
 
+    reset ();
+
     //  Reconnect.
-    start_connecting (true);
+    if (options.reconnect_ivl != -1)
+        start_connecting (true);
 
     //  For subscriber sockets we hiccup the inbound pipe, which will cause
     //  the socket object to resend all the subscriptions.
     if (pipe && (options.type == ZMQ_SUB || options.type == ZMQ_XSUB))
-        pipe->hiccup ();  
+        pipe->hiccup ();
 }
 
 void zmq::session_base_t::start_connecting (bool wait_)
@@ -393,18 +418,18 @@ void zmq::session_base_t::start_connecting (bool wait_)
 
     //  Create the connecter object.
 
-    if (protocol == "tcp") {
+    if (addr->protocol == "tcp") {
         tcp_connecter_t *connecter = new (std::nothrow) tcp_connecter_t (
-            io_thread, this, options, address.c_str (), wait_);
+            io_thread, this, options, addr, wait_);
         alloc_assert (connecter);
         launch_child (connecter);
         return;
     }
 
 #if !defined ZMQ_HAVE_WINDOWS && !defined ZMQ_HAVE_OPENVMS
-    if (protocol == "ipc") {
+    if (addr->protocol == "ipc") {
         ipc_connecter_t *connecter = new (std::nothrow) ipc_connecter_t (
-            io_thread, this, options, address.c_str (), wait_);
+            io_thread, this, options, addr, wait_);
         alloc_assert (connecter);
         launch_child (connecter);
         return;
@@ -414,10 +439,10 @@ void zmq::session_base_t::start_connecting (bool wait_)
 #if defined ZMQ_HAVE_OPENPGM
 
     //  Both PGM and EPGM transports are using the same infrastructure.
-    if (protocol == "pgm" || protocol == "epgm") {
+    if (addr->protocol == "pgm" || addr->protocol == "epgm") {
 
         //  For EPGM transport with UDP encapsulation of PGM is used.
-        bool udp_encapsulation = (protocol == "epgm");
+        bool udp_encapsulation = (addr->protocol == "epgm");
 
         //  At this point we'll create message pipes to the session straight
         //  away. There's no point in delaying it as no concept of 'connect'
@@ -429,8 +454,8 @@ void zmq::session_base_t::start_connecting (bool wait_)
                 io_thread, options);
             alloc_assert (pgm_sender);
 
-            int rc = pgm_sender->init (udp_encapsulation, address.c_str ());
-            zmq_assert (rc == 0);
+            int rc = pgm_sender->init (udp_encapsulation, addr->address.c_str ());
+            errno_assert (rc == 0);
 
             send_attach (this, pgm_sender);
         }
@@ -441,8 +466,8 @@ void zmq::session_base_t::start_connecting (bool wait_)
                 io_thread, options);
             alloc_assert (pgm_receiver);
 
-            int rc = pgm_receiver->init (udp_encapsulation, address.c_str ());
-            zmq_assert (rc == 0);
+            int rc = pgm_receiver->init (udp_encapsulation, addr->address.c_str ());
+            errno_assert (rc == 0);
 
             send_attach (this, pgm_receiver);
         }

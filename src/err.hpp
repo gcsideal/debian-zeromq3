@@ -26,7 +26,11 @@
 #include "../include/zmq.h"
 
 #include <assert.h>
+#if defined WINCE
+#include "..\builds\msvc\errno.hpp"
+#else
 #include <errno.h>
+#endif
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -53,7 +57,7 @@ namespace zmq
     const char *wsa_error ();
     const char *wsa_error_no (int no_);
     void win_error (char *buffer_, size_t buffer_size_);
-    void wsa_error_to_errno ();
+    int wsa_error_to_errno (int errcode);
 }
 
 //  Provides convenient way to check WSA-style errors on Windows.

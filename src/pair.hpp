@@ -38,11 +38,11 @@ namespace zmq
     {
     public:
 
-        pair_t (zmq::ctx_t *parent_, uint32_t tid_);
+        pair_t (zmq::ctx_t *parent_, uint32_t tid_, int sid);
         ~pair_t ();
 
         //  Overloads of functions from socket_base_t.
-        void xattach_pipe (zmq::pipe_t *pipe_);
+        void xattach_pipe (zmq::pipe_t *pipe_, bool icanhasall_);
         int xsend (zmq::msg_t *msg_, int flags_);
         int xrecv (zmq::msg_t *msg_, int flags_);
         bool xhas_in ();
@@ -65,7 +65,7 @@ namespace zmq
 
         pair_session_t (zmq::io_thread_t *io_thread_, bool connect_,
             socket_base_t *socket_, const options_t &options_,
-            const char *protocol_, const char *address_);
+            const address_t *addr_);
         ~pair_session_t ();
 
     private:

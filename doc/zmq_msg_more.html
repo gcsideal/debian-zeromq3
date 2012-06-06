@@ -3,8 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
-<meta name="generator" content="AsciiDoc 8.6.3" />
-<title>zmq_getmsgopt(3)</title>
+<meta name="generator" content="AsciiDoc 8.6.4" />
+<title>zmq_msg_more(3)</title>
 <style type="text/css">
 /* Sans-serif font. */
 h1, h2, h3, h4, h5, h6,
@@ -394,6 +394,42 @@ div.toclevel4 {
   font-size: 0.9em;
 }
 
+span.aqua { color: aqua; }
+span.black { color: black; }
+span.blue { color: blue; }
+span.fuchsia { color: fuchsia; }
+span.gray { color: gray; }
+span.green { color: green; }
+span.lime { color: lime; }
+span.maroon { color: maroon; }
+span.navy { color: navy; }
+span.olive { color: olive; }
+span.purple { color: purple; }
+span.red { color: red; }
+span.silver { color: silver; }
+span.teal { color: teal; }
+span.white { color: white; }
+span.yellow { color: yellow; }
+
+span.aqua-background { background: aqua; }
+span.black-background { background: black; }
+span.blue-background { background: blue; }
+span.fuchsia-background { background: fuchsia; }
+span.gray-background { background: gray; }
+span.green-background { background: green; }
+span.lime-background { background: lime; }
+span.maroon-background { background: maroon; }
+span.navy-background { background: navy; }
+span.olive-background { background: olive; }
+span.purple-background { background: purple; }
+span.red-background { background: red; }
+span.silver-background { background: silver; }
+span.teal-background { background: teal; }
+span.white-background { background: white; }
+span.yellow-background { background: yellow; }
+
+span.big { font-size: 2em; }
+span.small { font-size: 0.6em; }
 /* Overrides for manpage documents */
 h1 {
   padding-top: 0.5em;
@@ -550,12 +586,12 @@ footnotes: function () {
 <body class="manpage">
 <div id="header">
 <h1>
-zmq_getmsgopt(3) Manual Page
+zmq_msg_more(3) Manual Page
 </h1>
 <h2>NAME</h2>
 <div class="sectionbody">
-<p>zmq_getmsgopt -
-   retrieve message option
+<p>zmq_msg_more -
+   indicate if there are more message parts to receive
 </p>
 </div>
 </div>
@@ -563,55 +599,22 @@ zmq_getmsgopt(3) Manual Page
 <div class="sect1">
 <h2 id="_synopsis">SYNOPSIS</h2>
 <div class="sectionbody">
-<div class="paragraph"><p><strong>int zmq_getmsgopt (zmq_msg_t <em>*message</em>, int <em>option_name</em>, void <em>*option_value</em>, size_t <em>*option_len</em>);</strong></p></div>
+<div class="paragraph"><p><strong>int zmq_msg_more (zmq_msg_t <em>*message</em>);</strong></p></div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_description">DESCRIPTION</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>The <em>zmq_getmsgopt()</em> function shall retrieve the value for the option
-specified by the <em>option_name</em> argument for the message pointed to by the
-<em>message</em> argument, and store it in the buffer pointed to by the <em>option_value</em>
-argument. The <em>option_len</em> argument is the size in bytes of the buffer pointed
-to by <em>option_value</em>; upon successful completion <em>zmq_getsockopt()</em> shall
-modify the <em>option_len</em> argument to indicate the actual size of the option
-value stored in the buffer.</p></div>
-<div class="paragraph"><p>The following options can be retrieved with the <em>zmq_getmsgopt()</em> function:</p></div>
-<div class="dlist"><dl>
-<dt class="hdlist1">
-<strong>ZMQ_MORE</strong>
-</dt>
-<dd>
-<p>
-Indicates that there are more message parts to follow after the <em>message</em>.
-</p>
-</dd>
-</dl></div>
+<div class="paragraph"><p>The <em>zmq_msg_more()</em> function indicates whether this is part of a multi-part
+message, and there are further parts to receive.</p></div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_return_value">RETURN VALUE</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>The <em>zmq_getmsgopt()</em> function shall return zero if successful. Otherwise it
-shall return <tt>-1</tt> and set <em>errno</em> to one of the values defined below.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_errors">ERRORS</h2>
-<div class="sectionbody">
-<div class="dlist"><dl>
-<dt class="hdlist1">
-<strong>EINVAL</strong>
-</dt>
-<dd>
-<p>
-The requested option <em>option_name</em> is unknown, or the requested <em>option_size</em> or
-<em>option_value</em> is invalid, or the size of the buffer pointed to by
-<em>option_value</em>, as specified by <em>option_len</em>, is insufficient for storing the
-option value.
-</p>
-</dd>
-</dl></div>
+<div class="paragraph"><p>The <em>zmq_msg_more()</em> function shall return zero if this is the final part of
+a multi-part message, or the only part of a single-part message. It shall
+return 1 if there are further parts to receive.</p></div>
 </div>
 </div>
 <div class="sect1">
@@ -621,23 +624,18 @@ option value.
 <div class="title">Receiving a multi-part message</div>
 <div class="content">
 <pre><tt>zmq_msg_t part;
-int more;
-size_t more_size = sizeof (more);
 while (true) {
-    /* Create an empty 0MQ message to hold the message part */
+    //  Create an empty 0MQ message to hold the message part
     int rc = zmq_msg_init (&amp;part);
     assert (rc == 0);
-    /* Block until a message is available to be received from socket */
+    //  Block until a message is available to be received from socket
     rc = zmq_recvmsg (socket, &amp;part, 0);
     assert (rc != -1);
-    rc = getmsgopt (&amp;part, ZMQ_MORE, &amp;more, &amp;more_size);
-    assert (rc == 0);
-    if (more) {
-      fprintf (stderr, "more\n");
-    }
+    if (zmq_msg_more (&amp;part))
+        fprintf (stderr, "more\n");
     else {
-      fprintf (stderr, "end\n");
-      break;
+        fprintf (stderr, "end\n");
+        break;
     }
     zmq_msg_close (part);
 }</tt></pre>
@@ -647,10 +645,9 @@ while (true) {
 <div class="sect1">
 <h2 id="_see_also">SEE ALSO</h2>
 <div class="sectionbody">
-<div class="paragraph"><p><a href="zmq_msg_data.html">zmq_msg_data(3)</a>
+<div class="paragraph"><p><a href="zmq_msg_get.html">zmq_msg_get(3)</a>
+<a href="zmq_msg_set.html">zmq_msg_set(3)</a>
 <a href="zmq_msg_init.html">zmq_msg_init(3)</a>
-<a href="zmq_msg_init_size.html">zmq_msg_init_size(3)</a>
-<a href="zmq_msg_init_data.html">zmq_msg_init_data(3)</a>
 <a href="zmq_msg_close.html">zmq_msg_close(3)</a>
 <a href="zmq.html">zmq(7)</a></p></div>
 </div>
@@ -658,15 +655,16 @@ while (true) {
 <div class="sect1">
 <h2 id="_authors">AUTHORS</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>The ØMQ documentation was written by Chuck Remes &lt;<a href="mailto:cremes@mac.com">cremes@mac.com</a>&gt;.</p></div>
+<div class="paragraph"><p>This ØMQ manual page was written by Chuck Remes &lt;<a href="mailto:cremes@mac.com">cremes@mac.com</a>&gt; and Pieter
+Hintjens &lt;<a href="mailto:ph@imatix.com">ph@imatix.com</a>&gt;.</p></div>
 </div>
 </div>
 </div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-ØMQ 3.1.0<br />
-Last updated 2011-12-18 11:17:56 CET
+ØMQ 3.2.0<br />
+Last updated 2012-06-05 09:39:30 CEST
 </div>
 </div>
 </body>

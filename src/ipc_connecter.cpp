@@ -31,6 +31,9 @@
 #include "random.hpp"
 #include "err.hpp"
 #include "ip.hpp"
+#include "address.hpp"
+#include "ipc_address.hpp"
+#include "session_base.hpp"
 
 #include <unistd.h>
 #include <sys/types.h>
@@ -39,19 +42,19 @@
 
 zmq::ipc_connecter_t::ipc_connecter_t (class io_thread_t *io_thread_,
       class session_base_t *session_, const options_t &options_,
-      const char *address_, bool wait_) :
+      const address_t *addr_, bool wait_) :
     own_t (io_thread_, options_),
     io_object_t (io_thread_),
+    addr (addr_),
     s (retired_fd),
     handle_valid (false),
     wait (wait_),
     session (session_),
     current_reconnect_ivl(options.reconnect_ivl)
 {
-    //  TODO: set_addess should be called separately, so that the error
-    //  can be propagated.
-    int rc = set_address (address_);
-    zmq_assert (rc == 0);
+    zmq_assert (addr);
+    zmq_assert (addr->protocol == "ipc");
+    addr->to_string (endpoint);
 }
 
 zmq::ipc_connecter_t::~ipc_connecter_t ()
@@ -104,6 +107,8 @@ void zmq::ipc_connecter_t::out_event ()
 
     //  Shut the connecter down.
     terminate ();
+
+    session->monitor_event (ZMQ_EVENT_CONNECTED, endpoint.c_str(), fd);
 }
 
 void zmq::ipc_connecter_t::timer_event (int id_)
@@ -126,11 +131,12 @@ void zmq::ipc_connecter_t::start_connecting ()
         return;
     }
 
-    //  Connection establishment may be dealyed. Poll for its completion.
-    else if (rc == -1 && errno == EAGAIN) {
+    //  Connection establishment may be delayed. Poll for its completion.
+    else if (rc == -1 && errno == EINPROGRESS) {
         handle = add_fd (s);
         handle_valid = true;
         set_pollout (handle);
+        session->monitor_event (ZMQ_EVENT_CONNECT_DELAYED, endpoint.c_str(), zmq_errno());
         return;
     }
 
@@ -142,7 +148,9 @@ void zmq::ipc_connecter_t::start_connecting ()
 
 void zmq::ipc_connecter_t::add_reconnect_timer()
 {
-    add_timer (get_new_reconnect_ivl(), reconnect_timer_id);
+    int rc_ivl = get_new_reconnect_ivl();
+    add_timer (rc_ivl, reconnect_timer_id);
+    session->monitor_event (ZMQ_EVENT_CONNECT_RETRIED, endpoint.c_str(), rc_ivl);
 }
 
 int zmq::ipc_connecter_t::get_new_reconnect_ivl ()
@@ -165,11 +173,6 @@ int zmq::ipc_connecter_t::get_new_reconnect_ivl ()
     return this_interval;
 }
 
-int zmq::ipc_connecter_t::set_address (const char *addr_)
-{
-    return address.resolve (addr_);
-}
-
 int zmq::ipc_connecter_t::open ()
 {
     zmq_assert (s == retired_fd);
@@ -183,11 +186,20 @@ int zmq::ipc_connecter_t::open ()
     unblock_socket (s);
 
     //  Connect to the remote peer.
-    int rc = ::connect (s, address.addr (), address.addrlen ());
+    int rc = ::connect (
+        s, addr->resolved.ipc_addr->addr (),
+        addr->resolved.ipc_addr->addrlen ());
 
     //  Connect was successfull immediately.
     if (rc == 0)
         return 0;
+        
+    //  Translate other error codes indicating asynchronous connect has been
+    //  launched to a uniform EINPROGRESS.
+    if (rc == -1 && errno == EINTR) {
+        errno = EINPROGRESS;
+        return -1;
+    }
 
     //  Forward the error.
     return -1;
@@ -197,8 +209,11 @@ int zmq::ipc_connecter_t::close ()
 {
     zmq_assert (s != retired_fd);
     int rc = ::close (s);
-    if (rc != 0)
+    if (rc != 0) {
+        session->monitor_event (ZMQ_EVENT_CLOSE_FAILED, endpoint.c_str(), zmq_errno());
         return -1;
+    }
+    session->monitor_event (ZMQ_EVENT_CLOSED, endpoint.c_str(), s);
     s = retired_fd;
     return 0;
 }

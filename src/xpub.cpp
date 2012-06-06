@@ -26,8 +26,8 @@
 #include "err.hpp"
 #include "msg.hpp"
 
-zmq::xpub_t::xpub_t (class ctx_t *parent_, uint32_t tid_) :
-    socket_base_t (parent_, tid_),
+zmq::xpub_t::xpub_t (class ctx_t *parent_, uint32_t tid_, int sid_) :
+    socket_base_t (parent_, tid_, sid_),
     more (false)
 {
     options.type = ZMQ_XPUB;
@@ -37,10 +37,15 @@ zmq::xpub_t::~xpub_t ()
 {
 }
 
-void zmq::xpub_t::xattach_pipe (pipe_t *pipe_)
+void zmq::xpub_t::xattach_pipe (pipe_t *pipe_, bool icanhasall_)
 {
     zmq_assert (pipe_);
     dist.attach (pipe_);
+
+    //  If icanhasall_ is specified, the caller would like to subscribe
+    //  to all data on this pipe, implicitly.
+    if (icanhasall_)
+        subscriptions.add (NULL, 0, pipe_);
 
     //  The pipe is active when attached. Let's read the subscriptions from
     //  it, if any.
@@ -51,30 +56,30 @@ void zmq::xpub_t::xread_activated (pipe_t *pipe_)
 {
     //  There are some subscriptions waiting. Let's process them.
     msg_t sub;
-    sub.init ();
     while (true) {
 
         //  Grab next subscription.
-        if (!pipe_->read (&sub)) {
-            sub.close ();
+        if (!pipe_->read (&sub))
             return;
-        }
 
         //  Apply the subscription to the trie.
         unsigned char *data = (unsigned char*) sub.data ();
         size_t size = sub.size ();
-        zmq_assert (size > 0 && (*data == 0 || *data == 1));
-        bool unique;
-		if (*data == 0)
-		    unique = subscriptions.rm (data + 1, size - 1, pipe_);
-		else
-		    unique = subscriptions.add (data + 1, size - 1, pipe_);
+        if (size > 0 && (*data == 0 || *data == 1)) {
+            bool unique;
+            if (*data == 0)
+                unique = subscriptions.rm (data + 1, size - 1, pipe_);
+            else
+                unique = subscriptions.add (data + 1, size - 1, pipe_);
 
-        //  If the subscription is not a duplicate store it so that it can be
-        //  passed to used on next recv call.
-        if (unique && options.type != ZMQ_PUB)
-            pending.push_back (blob_t ((unsigned char*) sub.data (),
-                sub.size ()));
+            //  If the subscription is not a duplicate store it so that it can be
+            //  passed to used on next recv call.
+            if (unique && options.type != ZMQ_PUB)
+                pending.push_back (blob_t ((unsigned char*) sub.data (),
+                    sub.size ()));
+        }
+
+        sub.close();
     }
 }
 
@@ -171,9 +176,8 @@ void zmq::xpub_t::send_unsubscription (unsigned char *data_, size_t size_,
 
 zmq::xpub_session_t::xpub_session_t (io_thread_t *io_thread_, bool connect_,
       socket_base_t *socket_, const options_t &options_,
-      const char *protocol_, const char *address_) :
-    session_base_t (io_thread_, connect_, socket_, options_, protocol_,
-        address_)
+      const address_t *addr_) :
+    session_base_t (io_thread_, connect_, socket_, options_, addr_)
 {
 }
 

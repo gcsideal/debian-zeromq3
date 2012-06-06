@@ -2,12 +2,12 @@
 .\"     Title: zmq
 .\"    Author: [see the "AUTHORS" section]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 12/18/2011
+.\"      Date: 06/05/2012
 .\"    Manual: 0MQ Manual
-.\"    Source: 0MQ 3.1.0
+.\"    Source: 0MQ 3.2.0
 .\"  Language: English
 .\"
-.TH "ZMQ" "7" "12/18/2011" "0MQ 3\&.1\&.0" "0MQ Manual"
+.TH "ZMQ" "7" "06/05/2012" "0MQ 3\&.2\&.0" "0MQ Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -41,7 +41,34 @@ The 0MQ lightweight messaging kernel is a library which extends the standard soc
 This documentation presents an overview of 0MQ concepts, describes how 0MQ abstracts standard sockets and provides a reference manual for the functions provided by the 0MQ library\&.
 .SS "Context"
 .sp
-Before using any 0MQ library functions the caller must initialise a 0MQ \fIcontext\fR using \fIzmq_init()\fR\&. The following functions are provided to handle initialisation and termination of a \fIcontext\fR:
+Before using any 0MQ library functions you must create a 0MQ \fIcontext\fR\&. When you exit your application you must destroy the \fIcontext\fR\&. These functions let you work with \fIcontexts\fR:
+.PP
+Create a new 0MQ context
+.RS 4
+
+\fBzmq_ctx_new\fR(3)
+.RE
+.PP
+Work with context properties
+.RS 4
+
+\fBzmq_ctx_set\fR(3)
+\fBzmq_ctx_get\fR(3)
+.RE
+.PP
+Destroy a 0MQ context
+.RS 4
+
+\fBzmq_ctx_destroy\fR(3)
+.RE
+.PP
+Monitor a 0MQ context
+.RS 4
+
+\fBzmq_ctx_set_monitor\fR(3)
+.RE
+.sp
+These deprecated functions let you create and destroy \fIcontexts\fR:
 .PP
 Initialise 0MQ context
 .RS 4
@@ -92,6 +119,13 @@ Initialise a message
 \fBzmq_msg_init_data\fR(3)
 .RE
 .PP
+Sending and receiving a message
+.RS 4
+
+\fBzmq_msg_send\fR(3)
+\fBzmq_msg_recv\fR(3)
+.RE
+.PP
 Release a message
 .RS 4
 
@@ -103,6 +137,14 @@ Access message content
 
 \fBzmq_msg_data\fR(3)
 \fBzmq_msg_size\fR(3)
+\fBzmq_msg_more\fR(3)
+.RE
+.PP
+Work with message properties
+.RS 4
+
+\fBzmq_msg_get\fR(3)
+\fBzmq_msg_set\fR(3)
 .RE
 .PP
 Message manipulation
@@ -147,7 +189,9 @@ Sending and receiving messages
 .RS 4
 
 \fBzmq_send\fR(3)
+\fBzmq_sendmsg\fR(3)
 \fBzmq_recv\fR(3)
+\fBzmq_recvmsg\fR(3)
 .RE
 .PP
 \fBInput/output multiplexing\fR. 0MQ provides a mechanism for applications to multiplex input/output events over a set containing both 0MQ sockets and standard sockets\&. This mechanism mirrors the standard
@@ -185,27 +229,9 @@ Local in\-process (inter\-thread) communication transport
 .RE
 .SS "Devices"
 .sp
-Apart from the 0MQ library the 0MQ distribution includes \fIdevices\fR which are building blocks intended to serve as intermediate nodes in complex messaging topologies\&.
+0MQ provides \fIdevices\fR, which are building blocks that act as intermediate nodes in complex messaging topologies\&. Devices can act as brokers that other nodes connect to, proxies that connect through to other nodes, or any mix of these two models\&.
 .sp
-The following devices are provided:
-.PP
-Forwarder device for request\-response messaging
-.RS 4
-
-\fBzmq_queue\fR(1)
-.RE
-.PP
-Forwarder device for publish\-subscribe messaging
-.RS 4
-
-\fBzmq_forwarder\fR(1)
-.RE
-.PP
-Streamer device for parallelized pipeline messaging
-.RS 4
-
-\fBzmq_streamer\fR(1)
-.RE
+You can start a device in an application thread, see \fBzmq_device\fR(3)\&.
 .SH "ERROR HANDLING"
 .sp
 The 0MQ library functions handle errors using the standard conventions found on POSIX systems\&. Generally, this means that upon failure a 0MQ library function shall return either a NULL value (if returning a pointer) or a negative value (if returning an integer), and the actual error code shall be stored in the \fIerrno\fR variable\&.
@@ -226,15 +252,15 @@ Report 0MQ library version
 .sp
 The 0MQ library provides interfaces suitable for calling from programs in any language; this documentation documents those interfaces as they would be used by C programmers\&. The intent is that programmers using 0MQ from other languages shall refer to this documentation alongside any documentation provided by the vendor of their language binding\&.
 .sp
-Language bindings (Python, Ruby, Java and more) are provided by members of the 0MQ community and pointers can be found on the 0MQ website\&.
+Language bindings (C++, Python, PHP, Ruby, Java and more) are provided by members of the 0MQ community and pointers can be found on the 0MQ website\&.
 .SH "AUTHORS"
 .sp
-The 0MQ documentation was written by Martin Sustrik <\m[blue]\fBsustrik@250bpm\&.com\fR\m[]\&\s-2\u[1]\d\s+2> and Martin Lucina <\m[blue]\fBmartin@lucina\&.net\fR\m[]\&\s-2\u[2]\d\s+2>\&.
+This 0MQ manual page was written by Martin Sustrik <\m[blue]\fBsustrik@250bpm\&.com\fR\m[]\&\s-2\u[1]\d\s+2>, Martin Lucina <\m[blue]\fBmartin@lucina\&.net\fR\m[]\&\s-2\u[2]\d\s+2>, and Pieter Hintjens <\m[blue]\fBph@imatix\&.com\fR\m[]\&\s-2\u[3]\d\s+2>\&.
 .SH "RESOURCES"
 .sp
 Main web site: \m[blue]\fBhttp://www\&.zeromq\&.org/\fR\m[]
 .sp
-Report bugs to the 0MQ development mailing list: <\m[blue]\fBzeromq\-dev@lists\&.zeromq\&.org\fR\m[]\&\s-2\u[3]\d\s+2>
+Report bugs to the 0MQ development mailing list: <\m[blue]\fBzeromq\-dev@lists\&.zeromq\&.org\fR\m[]\&\s-2\u[4]\d\s+2>
 .SH "COPYING"
 .sp
 Free use of this software is granted under the terms of the GNU Lesser General Public License (LGPL)\&. For details see the files COPYING and COPYING\&.LESSER included with the 0MQ distribution\&.
@@ -250,6 +276,11 @@ martin@lucina.net
 \%mailto:martin@lucina.net
 .RE
 .IP " 3." 4
+ph@imatix.com
+.RS 4
+\%mailto:ph@imatix.com
+.RE
+.IP " 4." 4
 zeromq-dev@lists.zeromq.org
 .RS 4
 \%mailto:zeromq-dev@lists.zeromq.org

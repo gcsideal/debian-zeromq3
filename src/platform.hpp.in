@@ -18,6 +18,9 @@
 /* Define to 1 if you have the `freeifaddrs' function. */
 #undef HAVE_FREEIFADDRS
 
+/* Define to 1 if you have the `gethrtime' function. */
+#undef HAVE_GETHRTIME
+
 /* Define to 1 if you have the `getifaddrs' function. */
 #undef HAVE_GETIFADDRS
 
@@ -104,6 +107,9 @@
 
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the <sys/uio.h> header file. */
+#undef HAVE_SYS_UIO_H
 
 /* Define to 1 if you have the <time.h> header file. */
 #undef HAVE_TIME_H
@@ -207,6 +213,24 @@
 
 /* Have Solaris OS */
 #undef ZMQ_HAVE_SOLARIS
+
+/* Whether SO_KEEPALIVE is supported. */
+#undef ZMQ_HAVE_SO_KEEPALIVE
+
+/* Whether TCP_KEEPALIVE is supported. */
+#undef ZMQ_HAVE_TCP_KEEPALIVE
+
+/* Whether TCP_KEEPCNT is supported. */
+#undef ZMQ_HAVE_TCP_KEEPCNT
+
+/* Whether TCP_KEEPIDLE is supported. */
+#undef ZMQ_HAVE_TCP_KEEPIDLE
+
+/* Whether TCP_KEEPINTVL is supported. */
+#undef ZMQ_HAVE_TCP_KEEPINTVL
+
+/* Have uio.h header. */
+#undef ZMQ_HAVE_UIO
 
 /* Have Windows OS */
 #undef ZMQ_HAVE_WINDOWS
