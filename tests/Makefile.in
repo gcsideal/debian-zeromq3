@@ -38,7 +38,9 @@ noinst_PROGRAMS = test_pair_inproc$(EXEEXT) test_pair_tcp$(EXEEXT) \
 	test_reqrep_inproc$(EXEEXT) test_reqrep_tcp$(EXEEXT) \
 	test_hwm$(EXEEXT) test_reqrep_device$(EXEEXT) \
 	test_sub_forward$(EXEEXT) test_invalid_rep$(EXEEXT) \
-	test_msg_flags$(EXEEXT) $(am__EXEEXT_1)
+	test_msg_flags$(EXEEXT) test_connect_resolve$(EXEEXT) \
+	test_last_endpoint$(EXEEXT) test_term_endpoint$(EXEEXT) \
+	test_monitor$(EXEEXT) $(am__EXEEXT_1)
 @ON_MINGW_FALSE@am__append_1 = test_shutdown_stress \
 @ON_MINGW_FALSE@                   test_pair_ipc \
 @ON_MINGW_FALSE@                   test_reqrep_ipc \
@@ -63,17 +65,29 @@ CONFIG_CLEAN_VPATH_FILES =
 @ON_MINGW_FALSE@	test_pair_ipc$(EXEEXT) \
 @ON_MINGW_FALSE@	test_reqrep_ipc$(EXEEXT) test_timeo$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
+am_test_connect_resolve_OBJECTS = test_connect_resolve.$(OBJEXT)
+test_connect_resolve_OBJECTS = $(am_test_connect_resolve_OBJECTS)
+test_connect_resolve_LDADD = $(LDADD)
+test_connect_resolve_DEPENDENCIES = $(top_builddir)/src/libzmq.la
+AM_V_lt = $(am__v_lt_$(V))
+am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
+am__v_lt_0 = --silent
 am_test_hwm_OBJECTS = test_hwm.$(OBJEXT)
 test_hwm_OBJECTS = $(am_test_hwm_OBJECTS)
 test_hwm_LDADD = $(LDADD)
 test_hwm_DEPENDENCIES = $(top_builddir)/src/libzmq.la
-AM_V_lt = $(am__v_lt_$(V))
-am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
-am__v_lt_0 = --silent
 am_test_invalid_rep_OBJECTS = test_invalid_rep.$(OBJEXT)
 test_invalid_rep_OBJECTS = $(am_test_invalid_rep_OBJECTS)
 test_invalid_rep_LDADD = $(LDADD)
 test_invalid_rep_DEPENDENCIES = $(top_builddir)/src/libzmq.la
+am_test_last_endpoint_OBJECTS = test_last_endpoint.$(OBJEXT)
+test_last_endpoint_OBJECTS = $(am_test_last_endpoint_OBJECTS)
+test_last_endpoint_LDADD = $(LDADD)
+test_last_endpoint_DEPENDENCIES = $(top_builddir)/src/libzmq.la
+am_test_monitor_OBJECTS = test_monitor.$(OBJEXT)
+test_monitor_OBJECTS = $(am_test_monitor_OBJECTS)
+test_monitor_LDADD = $(LDADD)
+test_monitor_DEPENDENCIES = $(top_builddir)/src/libzmq.la
 am_test_msg_flags_OBJECTS = test_msg_flags.$(OBJEXT)
 test_msg_flags_OBJECTS = $(am_test_msg_flags_OBJECTS)
 test_msg_flags_LDADD = $(LDADD)
@@ -119,6 +133,10 @@ am_test_sub_forward_OBJECTS = test_sub_forward.$(OBJEXT)
 test_sub_forward_OBJECTS = $(am_test_sub_forward_OBJECTS)
 test_sub_forward_LDADD = $(LDADD)
 test_sub_forward_DEPENDENCIES = $(top_builddir)/src/libzmq.la
+am_test_term_endpoint_OBJECTS = test_term_endpoint.$(OBJEXT)
+test_term_endpoint_OBJECTS = $(am_test_term_endpoint_OBJECTS)
+test_term_endpoint_LDADD = $(LDADD)
+test_term_endpoint_DEPENDENCIES = $(top_builddir)/src/libzmq.la
 am__test_timeo_SOURCES_DIST = test_timeo.cpp
 @ON_MINGW_FALSE@am_test_timeo_OBJECTS = test_timeo.$(OBJEXT)
 test_timeo_OBJECTS = $(am_test_timeo_OBJECTS)
@@ -166,20 +184,25 @@ am__v_CCLD_0 = @echo "  CCLD  " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(test_hwm_SOURCES) $(test_invalid_rep_SOURCES) \
-	$(test_msg_flags_SOURCES) $(test_pair_inproc_SOURCES) \
-	$(test_pair_ipc_SOURCES) $(test_pair_tcp_SOURCES) \
-	$(test_reqrep_device_SOURCES) $(test_reqrep_inproc_SOURCES) \
-	$(test_reqrep_ipc_SOURCES) $(test_reqrep_tcp_SOURCES) \
-	$(test_shutdown_stress_SOURCES) $(test_sub_forward_SOURCES) \
+SOURCES = $(test_connect_resolve_SOURCES) $(test_hwm_SOURCES) \
+	$(test_invalid_rep_SOURCES) $(test_last_endpoint_SOURCES) \
+	$(test_monitor_SOURCES) $(test_msg_flags_SOURCES) \
+	$(test_pair_inproc_SOURCES) $(test_pair_ipc_SOURCES) \
+	$(test_pair_tcp_SOURCES) $(test_reqrep_device_SOURCES) \
+	$(test_reqrep_inproc_SOURCES) $(test_reqrep_ipc_SOURCES) \
+	$(test_reqrep_tcp_SOURCES) $(test_shutdown_stress_SOURCES) \
+	$(test_sub_forward_SOURCES) $(test_term_endpoint_SOURCES) \
 	$(test_timeo_SOURCES)
-DIST_SOURCES = $(test_hwm_SOURCES) $(test_invalid_rep_SOURCES) \
-	$(test_msg_flags_SOURCES) $(test_pair_inproc_SOURCES) \
-	$(am__test_pair_ipc_SOURCES_DIST) $(test_pair_tcp_SOURCES) \
-	$(test_reqrep_device_SOURCES) $(test_reqrep_inproc_SOURCES) \
+DIST_SOURCES = $(test_connect_resolve_SOURCES) $(test_hwm_SOURCES) \
+	$(test_invalid_rep_SOURCES) $(test_last_endpoint_SOURCES) \
+	$(test_monitor_SOURCES) $(test_msg_flags_SOURCES) \
+	$(test_pair_inproc_SOURCES) $(am__test_pair_ipc_SOURCES_DIST) \
+	$(test_pair_tcp_SOURCES) $(test_reqrep_device_SOURCES) \
+	$(test_reqrep_inproc_SOURCES) \
 	$(am__test_reqrep_ipc_SOURCES_DIST) $(test_reqrep_tcp_SOURCES) \
 	$(am__test_shutdown_stress_SOURCES_DIST) \
-	$(test_sub_forward_SOURCES) $(am__test_timeo_SOURCES_DIST)
+	$(test_sub_forward_SOURCES) $(test_term_endpoint_SOURCES) \
+	$(am__test_timeo_SOURCES_DIST)
 ETAGS = etags
 CTAGS = ctags
 am__tty_colors = \
@@ -235,6 +258,7 @@ LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 LTVER = @LTVER@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -266,6 +290,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
@@ -301,7 +326,6 @@ libzmq_have_asciidoc = @libzmq_have_asciidoc@
 libzmq_have_xmlto = @libzmq_have_xmlto@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -334,6 +358,10 @@ test_reqrep_device_SOURCES = test_reqrep_device.cpp
 test_sub_forward_SOURCES = test_sub_forward.cpp
 test_invalid_rep_SOURCES = test_invalid_rep.cpp
 test_msg_flags_SOURCES = test_msg_flags.cpp
+test_connect_resolve_SOURCES = test_connect_resolve.cpp
+test_last_endpoint_SOURCES = test_last_endpoint.cpp
+test_term_endpoint_SOURCES = test_term_endpoint.cpp
+test_monitor_SOURCES = test_monitor.cpp
 @ON_MINGW_FALSE@test_shutdown_stress_SOURCES = test_shutdown_stress.cpp
 @ON_MINGW_FALSE@test_pair_ipc_SOURCES = test_pair_ipc.cpp testutil.hpp
 @ON_MINGW_FALSE@test_reqrep_ipc_SOURCES = test_reqrep_ipc.cpp testutil.hpp
@@ -382,12 +410,21 @@ clean-noinstPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
+test_connect_resolve$(EXEEXT): $(test_connect_resolve_OBJECTS) $(test_connect_resolve_DEPENDENCIES) 
+	@rm -f test_connect_resolve$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(test_connect_resolve_OBJECTS) $(test_connect_resolve_LDADD) $(LIBS)
 test_hwm$(EXEEXT): $(test_hwm_OBJECTS) $(test_hwm_DEPENDENCIES) 
 	@rm -f test_hwm$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(test_hwm_OBJECTS) $(test_hwm_LDADD) $(LIBS)
 test_invalid_rep$(EXEEXT): $(test_invalid_rep_OBJECTS) $(test_invalid_rep_DEPENDENCIES) 
 	@rm -f test_invalid_rep$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(test_invalid_rep_OBJECTS) $(test_invalid_rep_LDADD) $(LIBS)
+test_last_endpoint$(EXEEXT): $(test_last_endpoint_OBJECTS) $(test_last_endpoint_DEPENDENCIES) 
+	@rm -f test_last_endpoint$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(test_last_endpoint_OBJECTS) $(test_last_endpoint_LDADD) $(LIBS)
+test_monitor$(EXEEXT): $(test_monitor_OBJECTS) $(test_monitor_DEPENDENCIES) 
+	@rm -f test_monitor$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(test_monitor_OBJECTS) $(test_monitor_LDADD) $(LIBS)
 test_msg_flags$(EXEEXT): $(test_msg_flags_OBJECTS) $(test_msg_flags_DEPENDENCIES) 
 	@rm -f test_msg_flags$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(test_msg_flags_OBJECTS) $(test_msg_flags_LDADD) $(LIBS)
@@ -418,6 +455,9 @@ test_shutdown_stress$(EXEEXT): $(test_shutdown_stress_OBJECTS) $(test_shutdown_s
 test_sub_forward$(EXEEXT): $(test_sub_forward_OBJECTS) $(test_sub_forward_DEPENDENCIES) 
 	@rm -f test_sub_forward$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(test_sub_forward_OBJECTS) $(test_sub_forward_LDADD) $(LIBS)
+test_term_endpoint$(EXEEXT): $(test_term_endpoint_OBJECTS) $(test_term_endpoint_DEPENDENCIES) 
+	@rm -f test_term_endpoint$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(test_term_endpoint_OBJECTS) $(test_term_endpoint_LDADD) $(LIBS)
 test_timeo$(EXEEXT): $(test_timeo_OBJECTS) $(test_timeo_DEPENDENCIES) 
 	@rm -f test_timeo$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(test_timeo_OBJECTS) $(test_timeo_LDADD) $(LIBS)
@@ -428,8 +468,11 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_connect_resolve.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_hwm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_invalid_rep.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_last_endpoint.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_monitor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_msg_flags.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_pair_inproc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_pair_ipc.Po@am__quote@
@@ -440,6 +483,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_reqrep_tcp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_shutdown_stress.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_sub_forward.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_term_endpoint.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_timeo.Po@am__quote@
 
 .cpp.o:

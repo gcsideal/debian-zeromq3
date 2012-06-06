@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
-<meta name="generator" content="AsciiDoc 8.6.3" />
+<meta name="generator" content="AsciiDoc 8.6.4" />
 <title>zmq(7)</title>
 <style type="text/css">
 /* Sans-serif font. */
@@ -394,6 +394,42 @@ div.toclevel4 {
   font-size: 0.9em;
 }
 
+span.aqua { color: aqua; }
+span.black { color: black; }
+span.blue { color: blue; }
+span.fuchsia { color: fuchsia; }
+span.gray { color: gray; }
+span.green { color: green; }
+span.lime { color: lime; }
+span.maroon { color: maroon; }
+span.navy { color: navy; }
+span.olive { color: olive; }
+span.purple { color: purple; }
+span.red { color: red; }
+span.silver { color: silver; }
+span.teal { color: teal; }
+span.white { color: white; }
+span.yellow { color: yellow; }
+
+span.aqua-background { background: aqua; }
+span.black-background { background: black; }
+span.blue-background { background: blue; }
+span.fuchsia-background { background: fuchsia; }
+span.gray-background { background: gray; }
+span.green-background { background: green; }
+span.lime-background { background: lime; }
+span.maroon-background { background: maroon; }
+span.navy-background { background: navy; }
+span.olive-background { background: olive; }
+span.purple-background { background: purple; }
+span.red-background { background: red; }
+span.silver-background { background: silver; }
+span.teal-background { background: teal; }
+span.white-background { background: white; }
+span.yellow-background { background: yellow; }
+
+span.big { font-size: 2em; }
+span.small { font-size: 0.6em; }
 /* Overrides for manpage documents */
 h1 {
   padding-top: 0.5em;
@@ -573,7 +609,7 @@ zmq(7) Manual Page
 <div class="paragraph"><p>The ØMQ lightweight messaging kernel is a library which extends the standard
 socket interfaces with features traditionally provided by specialised
 <em>messaging middleware</em> products. ØMQ sockets provide an abstraction of
-asynchronous  <em>message queues</em>, multiple <em>messaging patterns</em>, message
+asynchronous <em>message queues</em>, multiple <em>messaging patterns</em>, message
 filtering (<em>subscriptions</em>), seamless access to multiple <em>transport protocols</em>
 and more.</p></div>
 <div class="paragraph"><p>This documentation presents an overview of ØMQ concepts, describes how ØMQ
@@ -581,9 +617,45 @@ abstracts standard sockets and provides a reference manual for the functions
 provided by the ØMQ library.</p></div>
 <div class="sect2">
 <h3 id="_context">Context</h3>
-<div class="paragraph"><p>Before using any ØMQ library functions the caller must initialise a ØMQ
-<em>context</em> using <em>zmq_init()</em>. The following functions are provided to handle
-initialisation and termination of a <em>context</em>:</p></div>
+<div class="paragraph"><p>Before using any ØMQ library functions you must create a ØMQ <em>context</em>. When
+you exit your application you must destroy the <em>context</em>. These functions let
+you work with <em>contexts</em>:</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Create a new ØMQ context
+</dt>
+<dd>
+<p>
+    <a href="zmq_ctx_new.html">zmq_ctx_new(3)</a>
+</p>
+</dd>
+<dt class="hdlist1">
+Work with context properties
+</dt>
+<dd>
+<p>
+    <a href="zmq_ctx_set.html">zmq_ctx_set(3)</a>
+    <a href="zmq_ctx_get.html">zmq_ctx_get(3)</a>
+</p>
+</dd>
+<dt class="hdlist1">
+Destroy a ØMQ context
+</dt>
+<dd>
+<p>
+    <a href="zmq_ctx_destroy.html">zmq_ctx_destroy(3)</a>
+</p>
+</dd>
+<dt class="hdlist1">
+Monitor a ØMQ context
+</dt>
+<dd>
+<p>
+    <a href="zmq_ctx_set_monitor.html">zmq_ctx_set_monitor(3)</a>
+</p>
+</dd>
+</dl></div>
+<div class="paragraph"><p>These deprecated functions let you create and destroy <em>contexts</em>:</p></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
 Initialise ØMQ context
@@ -641,6 +713,15 @@ Initialise a message
 </p>
 </dd>
 <dt class="hdlist1">
+Sending and receiving a message
+</dt>
+<dd>
+<p>
+    <a href="zmq_msg_send.html">zmq_msg_send(3)</a>
+    <a href="zmq_msg_recv.html">zmq_msg_recv(3)</a>
+</p>
+</dd>
+<dt class="hdlist1">
 Release a message
 </dt>
 <dd>
@@ -655,6 +736,16 @@ Access message content
 <p>
     <a href="zmq_msg_data.html">zmq_msg_data(3)</a>
     <a href="zmq_msg_size.html">zmq_msg_size(3)</a>
+    <a href="zmq_msg_more.html">zmq_msg_more(3)</a>
+</p>
+</dd>
+<dt class="hdlist1">
+Work with message properties
+</dt>
+<dd>
+<p>
+    <a href="zmq_msg_get.html">zmq_msg_get(3)</a>
+    <a href="zmq_msg_set.html">zmq_msg_set(3)</a>
 </p>
 </dd>
 <dt class="hdlist1">
@@ -715,7 +806,9 @@ Sending and receiving messages
 <dd>
 <p>
     <a href="zmq_send.html">zmq_send(3)</a>
+    <a href="zmq_sendmsg.html">zmq_sendmsg(3)</a>
     <a href="zmq_recv.html">zmq_recv(3)</a>
+    <a href="zmq_recvmsg.html">zmq_recvmsg(3)</a>
 </p>
 </dd>
 </dl></div>
@@ -767,36 +860,11 @@ Local in-process (inter-thread) communication transport
 </div>
 <div class="sect2">
 <h3 id="_devices">Devices</h3>
-<div class="paragraph"><p>Apart from the ØMQ library the ØMQ distribution includes <em>devices</em> which are
-building blocks intended to serve as intermediate nodes in complex messaging
-topologies.</p></div>
-<div class="paragraph"><p>The following devices are provided:</p></div>
-<div class="dlist"><dl>
-<dt class="hdlist1">
-Forwarder device for request-response messaging
-</dt>
-<dd>
-<p>
-    <a href="zmq_queue.html">zmq_queue(1)</a>
-</p>
-</dd>
-<dt class="hdlist1">
-Forwarder device for publish-subscribe messaging
-</dt>
-<dd>
-<p>
-    <a href="zmq_forwarder.html">zmq_forwarder(1)</a>
-</p>
-</dd>
-<dt class="hdlist1">
-Streamer device for parallelized pipeline messaging
-</dt>
-<dd>
-<p>
-    <a href="zmq_streamer.html">zmq_streamer(1)</a>
-</p>
-</dd>
-</dl></div>
+<div class="paragraph"><p>ØMQ provides <em>devices</em>, which are building blocks that act as intermediate
+nodes in complex messaging topologies. Devices can act as brokers that other
+nodes connect to, proxies that connect through to other nodes, or any mix of
+these two models.</p></div>
+<div class="paragraph"><p>You can start a device in an application thread, see <a href="zmq_device.html">zmq_device(3)</a>.</p></div>
 </div>
 </div>
 </div>
@@ -839,15 +907,15 @@ language; this documentation documents those interfaces as they would be used
 by C programmers. The intent is that programmers using ØMQ from other languages
 shall refer to this documentation alongside any documentation provided by the
 vendor of their language binding.</p></div>
-<div class="paragraph"><p>Language bindings (Python, Ruby, Java and more) are provided by members
-of the ØMQ community and pointers can be found on the ØMQ website.</p></div>
+<div class="paragraph"><p>Language bindings (C++, Python, PHP, Ruby, Java and more) are provided by
+members of the ØMQ community and pointers can be found on the ØMQ website.</p></div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_authors">AUTHORS</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>The ØMQ documentation was written by Martin Sustrik &lt;<a href="mailto:sustrik@250bpm.com">sustrik@250bpm.com</a>&gt; and
-Martin Lucina &lt;<a href="mailto:martin@lucina.net">martin@lucina.net</a>&gt;.</p></div>
+<div class="paragraph"><p>This ØMQ manual page was written by Martin Sustrik &lt;<a href="mailto:sustrik@250bpm.com">sustrik@250bpm.com</a>&gt;,
+Martin Lucina &lt;<a href="mailto:martin@lucina.net">martin@lucina.net</a>&gt;, and Pieter Hintjens &lt;<a href="mailto:ph@imatix.com">ph@imatix.com</a>&gt;.</p></div>
 </div>
 </div>
 <div class="sect1">
@@ -869,8 +937,8 @@ included with the ØMQ distribution.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-ØMQ 3.1.0<br />
-Last updated 2011-12-18 11:17:56 CET
+ØMQ 3.2.0<br />
+Last updated 2012-06-05 09:39:30 CEST
 </div>
 </div>
 </body>

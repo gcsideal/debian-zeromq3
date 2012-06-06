@@ -2,12 +2,12 @@
 .\"     Title: zmq_send
 .\"    Author: [see the "AUTHORS" section]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 12/18/2011
+.\"      Date: 06/05/2012
 .\"    Manual: 0MQ Manual
-.\"    Source: 0MQ 3.1.0
+.\"    Source: 0MQ 3.2.0
 .\"  Language: English
 .\"
-.TH "ZMQ_SEND" "3" "12/18/2011" "0MQ 3\&.1\&.0" "0MQ Manual"
+.TH "ZMQ_SEND" "3" "06/05/2012" "0MQ 3\&.2\&.0" "0MQ Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -68,9 +68,9 @@ A successful invocation of \fIzmq_send()\fR does not indicate that the message h
 .RE
 .SS "Multi\-part messages"
 .sp
-A 0MQ message is composed of 1 or more message parts\&. Each message part is an independent \fIzmq_msg_t\fR in its own right\&. 0MQ ensures atomic delivery of messages; peers shall receive either all \fImessage parts\fR of a message or none at all\&. The total number of message parts is unlimited except by available memory\&.
+A 0MQ message is composed of 1 or more message parts\&. 0MQ ensures atomic delivery of messages: peers shall receive either all \fImessage parts\fR of a message or none at all\&. The total number of message parts is unlimited except by available memory\&.
 .sp
-An application that sends multipart messages must use the \fIZMQ_SNDMORE\fR flag when sending each data part except the final one\&.
+An application that sends multi\-part messages must use the \fIZMQ_SNDMORE\fR flag when sending each message part except the final one\&.
 .SH "RETURN VALUE"
 .sp
 The \fIzmq_send()\fR function shall return number of bytes in the message if successful\&. Otherwise it shall return \-1 and set \fIerrno\fR to one of the values defined below\&.
@@ -119,11 +119,6 @@ was invalid\&.
 .RS 4
 The operation was interrupted by delivery of a signal before the message was sent\&.
 .RE
-.PP
-\fBECANTROUTE\fR
-.RS 4
-Message cannot be routed to the destination specified as the peer is either dead or disconnected\&. This error makes sense only with ZMQ_ROUTER socket\&.
-.RE
 .SH "EXAMPLE"
 .PP
 \fBSending a multi-part message\fR. 
@@ -150,7 +145,7 @@ assert (rc == 2);
 \fBzmq_sendmsg\fR(3) \fBzmq_recv\fR(3) \fBzmq_recvmsg\fR(3) \fBzmq_socket\fR(7) \fBzmq\fR(7)
 .SH "AUTHORS"
 .sp
-+This man page was written by Martin Sustrik <\m[blue]\fBsustrik@250bpm\&.com\fR\m[]\&\s-2\u[1]\d\s+2>, Martin +Lucina <\m[blue]\fBmartin@lucina\&.net\fR\m[]\&\s-2\u[2]\d\s+2> and Pieter Hintjens <\m[blue]\fBph@imatix\&.com\fR\m[]\&\s-2\u[3]\d\s+2>\&.
+This 0MQ manual page was written by Martin Sustrik <\m[blue]\fBsustrik@250bpm\&.com\fR\m[]\&\s-2\u[1]\d\s+2> and Martin Lucina <\m[blue]\fBmato@kotelna\&.sk\fR\m[]\&\s-2\u[2]\d\s+2>, and Pieter Hintjens <\m[blue]\fBph@imatix\&.com\fR\m[]\&\s-2\u[3]\d\s+2>\&.
 .SH "NOTES"
 .IP " 1." 4
 sustrik@250bpm.com
@@ -158,9 +153,9 @@ sustrik@250bpm.com
 \%mailto:sustrik@250bpm.com
 .RE
 .IP " 2." 4
-martin@lucina.net
+mato@kotelna.sk
 .RS 4
-\%mailto:martin@lucina.net
+\%mailto:mato@kotelna.sk
 .RE
 .IP " 3." 4
 ph@imatix.com

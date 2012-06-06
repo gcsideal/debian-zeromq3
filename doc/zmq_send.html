@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
-<meta name="generator" content="AsciiDoc 8.6.3" />
+<meta name="generator" content="AsciiDoc 8.6.4" />
 <title>zmq_send(3)</title>
 <style type="text/css">
 /* Sans-serif font. */
@@ -394,6 +394,42 @@ div.toclevel4 {
   font-size: 0.9em;
 }
 
+span.aqua { color: aqua; }
+span.black { color: black; }
+span.blue { color: blue; }
+span.fuchsia { color: fuchsia; }
+span.gray { color: gray; }
+span.green { color: green; }
+span.lime { color: lime; }
+span.maroon { color: maroon; }
+span.navy { color: navy; }
+span.olive { color: olive; }
+span.purple { color: purple; }
+span.red { color: red; }
+span.silver { color: silver; }
+span.teal { color: teal; }
+span.white { color: white; }
+span.yellow { color: yellow; }
+
+span.aqua-background { background: aqua; }
+span.black-background { background: black; }
+span.blue-background { background: blue; }
+span.fuchsia-background { background: fuchsia; }
+span.gray-background { background: gray; }
+span.green-background { background: green; }
+span.lime-background { background: lime; }
+span.maroon-background { background: maroon; }
+span.navy-background { background: navy; }
+span.olive-background { background: olive; }
+span.purple-background { background: purple; }
+span.red-background { background: red; }
+span.silver-background { background: silver; }
+span.teal-background { background: teal; }
+span.white-background { background: white; }
+span.yellow-background { background: yellow; }
+
+span.big { font-size: 2em; }
+span.small { font-size: 0.6em; }
 /* Overrides for manpage documents */
 h1 {
   padding-top: 0.5em;
@@ -555,7 +591,7 @@ zmq_send(3) Manual Page
 <h2>NAME</h2>
 <div class="sectionbody">
 <p>zmq_send -
-   send a message part  on a socket
+   send a message part on a socket
 </p>
 </div>
 </div>
@@ -606,13 +642,12 @@ the <em>socket</em> and ØMQ has assumed responsibility for the message.</td>
 </div>
 <div class="sect2">
 <h3 id="_multi_part_messages">Multi-part messages</h3>
-<div class="paragraph"><p>A ØMQ message is composed of 1 or more message parts. Each message
-part is an independent <em>zmq_msg_t</em> in its own right. ØMQ ensures atomic
-delivery of messages; peers shall receive either all <em>message parts</em> of a
+<div class="paragraph"><p>A ØMQ message is composed of 1 or more message parts. ØMQ ensures atomic
+delivery of messages: peers shall receive either all <em>message parts</em> of a
 message or none at all. The total number of message parts is unlimited except
 by available memory.</p></div>
-<div class="paragraph"><p>An application that sends multipart messages must use the <em>ZMQ_SNDMORE</em> flag
-when sending each data part except the final one.</p></div>
+<div class="paragraph"><p>An application that sends multi-part messages must use the <em>ZMQ_SNDMORE</em> flag
+when sending each message part except the final one.</p></div>
 </div>
 </div>
 </div>
@@ -680,15 +715,6 @@ The operation was interrupted by delivery of a signal before the message was
 sent.
 </p>
 </dd>
-<dt class="hdlist1">
-<strong>ECANTROUTE</strong>
-</dt>
-<dd>
-<p>
-Message cannot be routed to the destination specified as the peer is either
-dead or disconnected. This error makes sense only with ZMQ_ROUTER socket.
-</p>
-</dd>
 </dl></div>
 </div>
 </div>
@@ -722,16 +748,16 @@ assert (rc == 2);</tt></pre>
 <div class="sect1">
 <h2 id="_authors">AUTHORS</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>+This man page was written by Martin Sustrik &lt;<a href="mailto:sustrik@250bpm.com">sustrik@250bpm.com</a>&gt;, Martin
-+Lucina &lt;<a href="mailto:martin@lucina.net">martin@lucina.net</a>&gt; and Pieter Hintjens &lt;<a href="mailto:ph@imatix.com">ph@imatix.com</a>&gt;.</p></div>
+<div class="paragraph"><p>This ØMQ manual page was written by Martin Sustrik &lt;<a href="mailto:sustrik@250bpm.com">sustrik@250bpm.com</a>&gt; and
+Martin Lucina &lt;<a href="mailto:mato@kotelna.sk">mato@kotelna.sk</a>&gt;, and Pieter Hintjens &lt;<a href="mailto:ph@imatix.com">ph@imatix.com</a>&gt;.</p></div>
 </div>
 </div>
 </div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-ØMQ 3.1.0<br />
-Last updated 2011-12-18 11:17:56 CET
+ØMQ 3.2.0<br />
+Last updated 2012-06-05 09:39:30 CEST
 </div>
 </div>
 </body>

@@ -223,7 +223,7 @@ ZMQ_RECONNECT_IVL: Retrieve reconnection interval
 The 'ZMQ_RECONNECT_IVL' option shall retrieve the initial reconnection interval
 for the specified 'socket'.  The reconnection interval is the period 0MQ shall
 wait between attempts to reconnect disconnected peers when using
-connection-oriented transports.
+connection-oriented transports. The value -1 means no reconnection.
 
 NOTE: The reconnection interval may be randomized by 0MQ to prevent
 reconnection storms in topologies with a large number of peers per socket.
@@ -296,7 +296,7 @@ Applicable socket types:: all, when using multicast transports
 
 
 ZMQ_RCVTIMEO: Maximum time before a socket operation returns with EAGAIN
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Retrieve the timeout for recv operation on the socket.  If the value is `0`,
 _zmq_recv(3)_ will return immediately, with a EAGAIN error if there is no
@@ -312,7 +312,7 @@ Applicable socket types:: all
 
 
 ZMQ_SNDTIMEO: Maximum time before a socket operation returns with EAGAIN
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Retrieve the timeout for send operation on the socket. If the value is `0`,
 _zmq_send(3)_ will return immediately, with a EAGAIN error if the message
@@ -355,6 +355,13 @@ necessarily indicate that messages are available to be read from, or can be
 written to, the underlying socket; applications must retrieve the actual event
 state with a subsequent retrieval of the 'ZMQ_EVENTS' option.
 
+NOTE: The returned file descriptor is also used internally by the 'zmq_send' 
+and 'zmq_recv' functions. As the descriptor is edge triggered, applications 
+must update the state of 'ZMQ_EVENTS' after each invocation of 'zmq_send' 
+or 'zmq_recv'.To be more explicit: after calling 'zmq_send' the socket may 
+become readable (and vice versa) without triggering a read event on the 
+file descriptor.
+
 CAUTION: The returned file descriptor is intended for use with a 'poll' or
 similar system call only. Applications must never attempt to read or write data
 to it directly, neither should they try to close it.
@@ -391,6 +398,62 @@ Option value unit:: N/A (flags)
 Default value:: N/A
 Applicable socket types:: all
 
+ZMQ_LAST_ENDPOINT: Retrieve the last endpoint set
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The 'ZMQ_LAST_ENDPOINT' option shall retrieve the last endpoint bound for 
+TCP and IPC transports. The returned value will be a string in the form of
+a ZMQ DSN. Note that if the TCP host is INADDR_ANY, indicated by a *, then
+the returned address will be 0.0.0.0 (for IPv4).
+
+[horizontal]
+Option value type:: character string
+Option value unit:: N/A
+Default value:: NULL
+Applicable socket types:: all, when binding TCP or IPC transports
+
+ZMQ_TCP_KEEPALIVE: Override SO_KEEPALIVE socket option
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Override 'SO_KEEPALIVE' socket option(where supported by OS).
+The default value of `-1` means to skip any overrides and leave it to OS default.
+
+[horizontal]
+Option value type:: int
+Option value unit:: -1,0,1
+Default value:: -1 (leave to OS default)
+Applicable socket types:: all, when using TCP transports.
+
+ZMQ_TCP_KEEPALIVE_IDLE: Override TCP_KEEPCNT(or TCP_KEEPALIVE on some OS)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Override 'TCP_KEEPCNT'(or 'TCP_KEEPALIVE' on some OS) socket option(where supported by OS).
+The default value of `-1` means to skip any overrides and leave it to OS default.
+
+[horizontal]
+Option value type:: int
+Option value unit:: -1,>0
+Default value:: -1 (leave to OS default)
+Applicable socket types:: all, when using TCP transports.
+
+ZMQ_TCP_KEEPALIVE_CNT: Override TCP_KEEPCNT socket option
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Override 'TCP_KEEPCNT' socket option(where supported by OS).
+The default value of `-1` means to skip any overrides and leave it to OS default.
+
+[horizontal]
+Option value type:: int
+Option value unit:: -1,>0
+Default value:: -1 (leave to OS default)
+Applicable socket types:: all, when using TCP transports.
+
+ZMQ_TCP_KEEPALIVE_INTVL: Override TCP_KEEPINTVL socket option
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Override 'TCP_KEEPINTVL' socket option(where supported by OS).
+The default value of `-1` means to skip any overrides and leave it to OS default.
+
+[horizontal]
+Option value type:: int
+Option value unit:: -1,>0
+Default value:: -1 (leave to OS default)
+Applicable socket types:: all, when using TCP transports.
 
 RETURN VALUE
 ------------
@@ -434,5 +497,5 @@ linkzmq:zmq[7]
 
 AUTHORS
 -------
-The 0MQ documentation was written by Martin Sustrik <sustrik@250bpm.com> and
-Martin Lucina <martin@lucina.net>.
+This 0MQ manual page was written by Martin Sustrik <sustrik@250bpm.com> and
+Martin Lucina <mato@kotelna.sk>.

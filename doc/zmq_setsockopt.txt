@@ -12,8 +12,9 @@ SYNOPSIS
 --------
 *int zmq_setsockopt (void '*socket', int 'option_name', const void '*option_value', size_t 'option_len');*
 
-Caution: All options, with the exception of ZMQ_SUBSCRIBE, ZMQ_UNSUBSCRIBE and
-ZMQ_LINGER, only take effect for subsequent socket bind/connects.
+Caution: All options, with the exception of ZMQ_SUBSCRIBE, ZMQ_UNSUBSCRIBE,
+ZMQ_LINGER and ZMQ_FAIL_UNROUTABLE only take effect for subsequent socket 
+bind/connects.
 
 DESCRIPTION
 -----------
@@ -132,6 +133,9 @@ identity.
 Identity should be at least one byte and at most 255 bytes long. Identities
 starting with binary zero are reserved for use by 0MQ infrastructure.
 
+If two peers use the same identity when connecting to a third peer, the
+results shall be undefined.
+
 [horizontal]
 Option value type:: binary data
 Option value unit:: N/A
@@ -231,7 +235,7 @@ ZMQ_RECONNECT_IVL: Set reconnection interval
 The 'ZMQ_RECONNECT_IVL' option shall set the initial reconnection interval for
 the specified 'socket'.  The reconnection interval is the period 0MQ
 shall wait between attempts to reconnect disconnected peers when using
-connection-oriented transports.
+connection-oriented transports. The value -1 means no reconnection.
 
 NOTE: The reconnection interval may be randomized by 0MQ to prevent
 reconnection storms in topologies with a large number of peers per socket.
@@ -348,11 +352,89 @@ Default value:: 1 (true)
 Applicable socket types:: all, when using TCP transports.
 
 
+ZMQ_FAIL_UNROUTABLE: Set unroutable message behavior
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sets the behavior when an unroutable message is encountered in a 'ZMQ_ROUTER'
+socket. A value of `0` is the default behavior when the message is silently
+dropped, while a value of `1` forces the sending to fail with a 'EHOSTUNREACH'
+error code.
+
+[horizontal]
+Option value type:: int
+Option value unit:: boolean
+Default value:: 0 (false)
+Applicable socket types:: ZMQ_ROUTER
+
+
+ZMQ_TCP_KEEPALIVE: Override SO_KEEPALIVE socket option
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Override 'SO_KEEPALIVE' socket option(where supported by OS).
+The default value of `-1` means to skip any overrides and leave it to OS default.
+
+[horizontal]
+Option value type:: int
+Option value unit:: -1,0,1
+Default value:: -1 (leave to OS default)
+Applicable socket types:: all, when using TCP transports.
+
+
+ZMQ_TCP_KEEPALIVE_IDLE: Override TCP_KEEPCNT(or TCP_KEEPALIVE on some OS)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Override 'TCP_KEEPCNT'(or 'TCP_KEEPALIVE' on some OS) socket option(where supported by OS).
+The default value of `-1` means to skip any overrides and leave it to OS default.
+
+[horizontal]
+Option value type:: int
+Option value unit:: -1,>0
+Default value:: -1 (leave to OS default)
+Applicable socket types:: all, when using TCP transports.
+
+
+ZMQ_TCP_KEEPALIVE_CNT: Override TCP_KEEPCNT socket option
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Override 'TCP_KEEPCNT' socket option(where supported by OS).
+The default value of `-1` means to skip any overrides and leave it to OS default.
+
+[horizontal]
+Option value type:: int
+Option value unit:: -1,>0
+Default value:: -1 (leave to OS default)
+Applicable socket types:: all, when using TCP transports.
+
+
+ZMQ_TCP_KEEPALIVE_INTVL: Override TCP_KEEPINTVL socket option
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Override 'TCP_KEEPINTVL' socket option(where supported by OS).
+The default value of `-1` means to skip any overrides and leave it to OS default.
+
+[horizontal]
+Option value type:: int
+Option value unit:: -1,>0
+Default value:: -1 (leave to OS default)
+Applicable socket types:: all, when using TCP transports.
+
+
+ZMQ_TCP_ACCEPT_FILTER: Assign filters to allow new TCP connections
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Assign arbitrary number of filters that will be applied for each new TCP transport
+connection on a listening socket.
+If no filters applied, then TCP transport allows connections from any ip.
+If at least one filter is applied then new connection source ip should be matched.
+To clear all filters call zmq_setsockopt(socket, ZMQ_TCP_ACCEPT_FILTER, NULL, 0).
+Filter is a null-terminated string with ipv6 or ipv4 CIDR.
+
+[horizontal]
+Option value type:: binary data
+Option value unit:: N/A
+Default value:: no filters (allow from all)
+Applicable socket types:: all listening sockets, when using TCP transports.
+
+
 RETURN VALUE
 ------------
 The _zmq_setsockopt()_ function shall return zero if successful. Otherwise it
 shall return `-1` and set 'errno' to one of the values defined below.
-
 
 ERRORS
 ------
@@ -405,5 +487,5 @@ linkzmq:zmq[7]
 
 AUTHORS
 -------
-The 0MQ documentation was written by Martin Sustrik <sustrik@250bpm.com> and
-Martin Lucina <martin@lucina.net>.
+This 0MQ manual page was written by Martin Sustrik <sustrik@250bpm.com> and
+Martin Lucina <mato@kotelna.sk>.

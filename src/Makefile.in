@@ -79,27 +79,28 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)" \
 LTLIBRARIES = $(lib_LTLIBRARIES)
 @BUILD_PGM_TRUE@libzmq_la_DEPENDENCIES =  \
 @BUILD_PGM_TRUE@	$(top_srcdir)/@pgm_srcdir@/libpgm_noinst.la
-am_libzmq_la_OBJECTS = libzmq_la-clock.lo libzmq_la-ctx.lo \
-	libzmq_la-decoder.lo libzmq_la-devpoll.lo libzmq_la-dist.lo \
-	libzmq_la-encoder.lo libzmq_la-epoll.lo libzmq_la-err.lo \
-	libzmq_la-fq.lo libzmq_la-io_object.lo libzmq_la-io_thread.lo \
-	libzmq_la-ip.lo libzmq_la-ipc_address.lo \
-	libzmq_la-ipc_connecter.lo libzmq_la-ipc_listener.lo \
-	libzmq_la-kqueue.lo libzmq_la-lb.lo libzmq_la-mailbox.lo \
-	libzmq_la-msg.lo libzmq_la-mtrie.lo libzmq_la-object.lo \
-	libzmq_la-options.lo libzmq_la-own.lo libzmq_la-pair.lo \
-	libzmq_la-pgm_receiver.lo libzmq_la-pgm_sender.lo \
-	libzmq_la-pgm_socket.lo libzmq_la-pipe.lo libzmq_la-poll.lo \
-	libzmq_la-poller_base.lo libzmq_la-pull.lo libzmq_la-push.lo \
-	libzmq_la-reaper.lo libzmq_la-pub.lo libzmq_la-random.lo \
-	libzmq_la-rep.lo libzmq_la-req.lo libzmq_la-select.lo \
-	libzmq_la-session_base.lo libzmq_la-signaler.lo \
-	libzmq_la-socket_base.lo libzmq_la-stream_engine.lo \
-	libzmq_la-sub.lo libzmq_la-tcp_address.lo \
-	libzmq_la-tcp_connecter.lo libzmq_la-tcp_listener.lo \
-	libzmq_la-thread.lo libzmq_la-trie.lo libzmq_la-xpub.lo \
-	libzmq_la-xrep.lo libzmq_la-xreq.lo libzmq_la-xsub.lo \
-	libzmq_la-zmq.lo libzmq_la-zmq_utils.lo
+am_libzmq_la_OBJECTS = libzmq_la-address.lo libzmq_la-clock.lo \
+	libzmq_la-ctx.lo libzmq_la-decoder.lo libzmq_la-device.lo \
+	libzmq_la-devpoll.lo libzmq_la-dist.lo libzmq_la-encoder.lo \
+	libzmq_la-epoll.lo libzmq_la-err.lo libzmq_la-fq.lo \
+	libzmq_la-io_object.lo libzmq_la-io_thread.lo libzmq_la-ip.lo \
+	libzmq_la-ipc_address.lo libzmq_la-ipc_connecter.lo \
+	libzmq_la-ipc_listener.lo libzmq_la-kqueue.lo libzmq_la-lb.lo \
+	libzmq_la-mailbox.lo libzmq_la-msg.lo libzmq_la-mtrie.lo \
+	libzmq_la-object.lo libzmq_la-options.lo libzmq_la-own.lo \
+	libzmq_la-pair.lo libzmq_la-pgm_receiver.lo \
+	libzmq_la-pgm_sender.lo libzmq_la-pgm_socket.lo \
+	libzmq_la-pipe.lo libzmq_la-poll.lo libzmq_la-poller_base.lo \
+	libzmq_la-pull.lo libzmq_la-push.lo libzmq_la-reaper.lo \
+	libzmq_la-pub.lo libzmq_la-random.lo libzmq_la-rep.lo \
+	libzmq_la-req.lo libzmq_la-select.lo libzmq_la-session_base.lo \
+	libzmq_la-signaler.lo libzmq_la-socket_base.lo \
+	libzmq_la-stream_engine.lo libzmq_la-sub.lo \
+	libzmq_la-tcp_address.lo libzmq_la-tcp_connecter.lo \
+	libzmq_la-tcp_listener.lo libzmq_la-thread.lo \
+	libzmq_la-trie.lo libzmq_la-xpub.lo libzmq_la-router.lo \
+	libzmq_la-dealer.lo libzmq_la-xsub.lo libzmq_la-zmq.lo \
+	libzmq_la-zmq_utils.lo
 libzmq_la_OBJECTS = $(am_libzmq_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -206,6 +207,7 @@ LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 LTVER = @LTVER@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -237,6 +239,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
@@ -272,7 +275,6 @@ libzmq_have_asciidoc = @libzmq_have_asciidoc@
 libzmq_have_xmlto = @libzmq_have_xmlto@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -297,6 +299,7 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libzmq.pc
 include_HEADERS = ../include/zmq.h ../include/zmq_utils.h
 libzmq_la_SOURCES = \
+    address.hpp \
     array.hpp \
     atomic_counter.hpp \
     atomic_ptr.hpp \
@@ -306,6 +309,7 @@ libzmq_la_SOURCES = \
     config.hpp \
     ctx.hpp \
     decoder.hpp \
+    device.hpp \
     devpoll.hpp \
     dist.hpp \
     encoder.hpp \
@@ -362,14 +366,16 @@ libzmq_la_SOURCES = \
     windows.hpp \
     wire.hpp \
     xpub.hpp \
-    xrep.hpp \
-    xreq.hpp \
+    router.hpp \
+    dealer.hpp \
     xsub.hpp \
     ypipe.hpp \
     yqueue.hpp \
+    address.cpp \
     clock.cpp \
     ctx.cpp \
     decoder.cpp \
+    device.cpp \
     devpoll.cpp \
     dist.cpp \
     encoder.cpp \
@@ -416,8 +422,8 @@ libzmq_la_SOURCES = \
     thread.cpp \
     trie.cpp \
     xpub.cpp \
-    xrep.cpp \
-    xreq.cpp \
+    router.cpp \
+    dealer.cpp \
     xsub.cpp \
     zmq.cpp \
     zmq_utils.cpp
@@ -521,9 +527,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-address.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-clock.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-ctx.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-dealer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-decoder.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-device.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-devpoll.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-dist.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-encoder.Plo@am__quote@
@@ -558,6 +567,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-reaper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-rep.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-req.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-router.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-select.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-session_base.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-signaler.Plo@am__quote@
@@ -570,8 +580,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-thread.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-trie.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-xpub.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-xrep.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-xreq.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-xsub.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-zmq.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libzmq_la-zmq_utils.Plo@am__quote@
@@ -600,6 +608,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
 
+libzmq_la-address.lo: address.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libzmq_la_CPPFLAGS) $(CPPFLAGS) $(libzmq_la_CXXFLAGS) $(CXXFLAGS) -MT libzmq_la-address.lo -MD -MP -MF $(DEPDIR)/libzmq_la-address.Tpo -c -o libzmq_la-address.lo `test -f 'address.cpp' || echo '$(srcdir)/'`address.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libzmq_la-address.Tpo $(DEPDIR)/libzmq_la-address.Plo
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='address.cpp' object='libzmq_la-address.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libzmq_la_CPPFLAGS) $(CPPFLAGS) $(libzmq_la_CXXFLAGS) $(CXXFLAGS) -c -o libzmq_la-address.lo `test -f 'address.cpp' || echo '$(srcdir)/'`address.cpp
+
 libzmq_la-clock.lo: clock.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libzmq_la_CPPFLAGS) $(CPPFLAGS) $(libzmq_la_CXXFLAGS) $(CXXFLAGS) -MT libzmq_la-clock.lo -MD -MP -MF $(DEPDIR)/libzmq_la-clock.Tpo -c -o libzmq_la-clock.lo `test -f 'clock.cpp' || echo '$(srcdir)/'`clock.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libzmq_la-clock.Tpo $(DEPDIR)/libzmq_la-clock.Plo
@@ -623,6 +639,14 @@ libzmq_la-decoder.lo: decoder.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='decoder.cpp' object='libzmq_la-decoder.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libzmq_la_CPPFLAGS) $(CPPFLAGS) $(libzmq_la_CXXFLAGS) $(CXXFLAGS) -c -o libzmq_la-decoder.lo `test -f 'decoder.cpp' || echo '$(srcdir)/'`decoder.cpp
+
+libzmq_la-device.lo: device.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libzmq_la_CPPFLAGS) $(CPPFLAGS) $(libzmq_la_CXXFLAGS) $(CXXFLAGS) -MT libzmq_la-device.lo -MD -MP -MF $(DEPDIR)/libzmq_la-device.Tpo -c -o libzmq_la-device.lo `test -f 'device.cpp' || echo '$(srcdir)/'`device.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libzmq_la-device.Tpo $(DEPDIR)/libzmq_la-device.Plo
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='device.cpp' object='libzmq_la-device.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libzmq_la_CPPFLAGS) $(CPPFLAGS) $(libzmq_la_CXXFLAGS) $(CXXFLAGS) -c -o libzmq_la-device.lo `test -f 'device.cpp' || echo '$(srcdir)/'`device.cpp
 
 libzmq_la-devpoll.lo: devpoll.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libzmq_la_CPPFLAGS) $(CPPFLAGS) $(libzmq_la_CXXFLAGS) $(CXXFLAGS) -MT libzmq_la-devpoll.lo -MD -MP -MF $(DEPDIR)/libzmq_la-devpoll.Tpo -c -o libzmq_la-devpoll.lo `test -f 'devpoll.cpp' || echo '$(srcdir)/'`devpoll.cpp
@@ -992,21 +1016,21 @@ libzmq_la-xpub.lo: xpub.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libzmq_la_CPPFLAGS) $(CPPFLAGS) $(libzmq_la_CXXFLAGS) $(CXXFLAGS) -c -o libzmq_la-xpub.lo `test -f 'xpub.cpp' || echo '$(srcdir)/'`xpub.cpp
 
-libzmq_la-xrep.lo: xrep.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libzmq_la_CPPFLAGS) $(CPPFLAGS) $(libzmq_la_CXXFLAGS) $(CXXFLAGS) -MT libzmq_la-xrep.lo -MD -MP -MF $(DEPDIR)/libzmq_la-xrep.Tpo -c -o libzmq_la-xrep.lo `test -f 'xrep.cpp' || echo '$(srcdir)/'`xrep.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libzmq_la-xrep.Tpo $(DEPDIR)/libzmq_la-xrep.Plo
+libzmq_la-router.lo: router.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libzmq_la_CPPFLAGS) $(CPPFLAGS) $(libzmq_la_CXXFLAGS) $(CXXFLAGS) -MT libzmq_la-router.lo -MD -MP -MF $(DEPDIR)/libzmq_la-router.Tpo -c -o libzmq_la-router.lo `test -f 'router.cpp' || echo '$(srcdir)/'`router.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libzmq_la-router.Tpo $(DEPDIR)/libzmq_la-router.Plo
 @am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='xrep.cpp' object='libzmq_la-xrep.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='router.cpp' object='libzmq_la-router.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libzmq_la_CPPFLAGS) $(CPPFLAGS) $(libzmq_la_CXXFLAGS) $(CXXFLAGS) -c -o libzmq_la-xrep.lo `test -f 'xrep.cpp' || echo '$(srcdir)/'`xrep.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libzmq_la_CPPFLAGS) $(CPPFLAGS) $(libzmq_la_CXXFLAGS) $(CXXFLAGS) -c -o libzmq_la-router.lo `test -f 'router.cpp' || echo '$(srcdir)/'`router.cpp
 
-libzmq_la-xreq.lo: xreq.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libzmq_la_CPPFLAGS) $(CPPFLAGS) $(libzmq_la_CXXFLAGS) $(CXXFLAGS) -MT libzmq_la-xreq.lo -MD -MP -MF $(DEPDIR)/libzmq_la-xreq.Tpo -c -o libzmq_la-xreq.lo `test -f 'xreq.cpp' || echo '$(srcdir)/'`xreq.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libzmq_la-xreq.Tpo $(DEPDIR)/libzmq_la-xreq.Plo
+libzmq_la-dealer.lo: dealer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libzmq_la_CPPFLAGS) $(CPPFLAGS) $(libzmq_la_CXXFLAGS) $(CXXFLAGS) -MT libzmq_la-dealer.lo -MD -MP -MF $(DEPDIR)/libzmq_la-dealer.Tpo -c -o libzmq_la-dealer.lo `test -f 'dealer.cpp' || echo '$(srcdir)/'`dealer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libzmq_la-dealer.Tpo $(DEPDIR)/libzmq_la-dealer.Plo
 @am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='xreq.cpp' object='libzmq_la-xreq.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='dealer.cpp' object='libzmq_la-dealer.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libzmq_la_CPPFLAGS) $(CPPFLAGS) $(libzmq_la_CXXFLAGS) $(CXXFLAGS) -c -o libzmq_la-xreq.lo `test -f 'xreq.cpp' || echo '$(srcdir)/'`xreq.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libzmq_la_CPPFLAGS) $(CPPFLAGS) $(libzmq_la_CXXFLAGS) $(CXXFLAGS) -c -o libzmq_la-dealer.lo `test -f 'dealer.cpp' || echo '$(srcdir)/'`dealer.cpp
 
 libzmq_la-xsub.lo: xsub.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libzmq_la_CPPFLAGS) $(CPPFLAGS) $(libzmq_la_CXXFLAGS) $(CXXFLAGS) -MT libzmq_la-xsub.lo -MD -MP -MF $(DEPDIR)/libzmq_la-xsub.Tpo -c -o libzmq_la-xsub.lo `test -f 'xsub.cpp' || echo '$(srcdir)/'`xsub.cpp

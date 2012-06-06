@@ -1,6 +1,6 @@
 /*
+    Copyright (c) 2007-2012 iMatix Corporation
     Copyright (c) 2009-2011 250bpm s.r.o.
-    Copyright (c) 2007-2009 iMatix Corporation
     Copyright (c) 2011 VMware, Inc.
     Copyright (c) 2007-2011 Other contributors as noted in the AUTHORS file
 
@@ -51,7 +51,7 @@ bool zmq::encoder_t::size_ready ()
 {
     //  Write message body into the buffer.
     next_step (in_progress.data (), in_progress.size (),
-        &encoder_t::message_ready, false);
+        &encoder_t::message_ready, !(in_progress.flags () & msg_t::more));
     return true;
 }
 
@@ -89,16 +89,14 @@ bool zmq::encoder_t::message_ready ()
     //  message size. In both cases 'flags' field follows.
     if (size < 255) {
         tmpbuf [0] = (unsigned char) size;
-        tmpbuf [1] = (in_progress.flags () & ~msg_t::shared);
-        next_step (tmpbuf, 2, &encoder_t::size_ready,
-            !(in_progress.flags () & msg_t::more));
+        tmpbuf [1] = (in_progress.flags () & msg_t::more);
+        next_step (tmpbuf, 2, &encoder_t::size_ready, false);
     }
     else {
         tmpbuf [0] = 0xff;
         put_uint64 (tmpbuf + 1, size);
-        tmpbuf [9] = (in_progress.flags () & ~msg_t::shared);
-        next_step (tmpbuf, 10, &encoder_t::size_ready,
-            !(in_progress.flags () & msg_t::more));
+        tmpbuf [9] = (in_progress.flags () & msg_t::more);
+        next_step (tmpbuf, 10, &encoder_t::size_ready, false);
     }
     return true;
 }

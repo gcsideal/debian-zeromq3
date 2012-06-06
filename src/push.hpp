@@ -39,13 +39,13 @@ namespace zmq
     {
     public:
 
-        push_t (zmq::ctx_t *parent_, uint32_t tid_);
+        push_t (zmq::ctx_t *parent_, uint32_t tid_, int sid_);
         ~push_t ();
 
     protected:
 
         //  Overloads of functions from socket_base_t.
-        void xattach_pipe (zmq::pipe_t *pipe_);
+        void xattach_pipe (zmq::pipe_t *pipe_, bool icanhasall_);
         int xsend (zmq::msg_t *msg_, int flags_);
         bool xhas_out ();
         void xwrite_activated (zmq::pipe_t *pipe_);
@@ -66,7 +66,7 @@ namespace zmq
 
         push_session_t (zmq::io_thread_t *io_thread_, bool connect_,
             socket_base_t *socket_, const options_t &options_,
-            const char *protocol_, const char *address_);
+            const address_t *addr_);
         ~push_session_t ();
 
     private:

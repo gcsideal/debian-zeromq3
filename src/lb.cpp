@@ -58,6 +58,7 @@ void zmq::lb_t::terminated (pipe_t *pipe_)
     //  accordingly.
     if (index < active) {
         active--;
+        pipes.swap (index, active);
         if (current == active)
             current = 0;
     }
@@ -78,21 +79,18 @@ int zmq::lb_t::send (msg_t *msg_, int flags_)
     if (dropping) {
 
         more = msg_->flags () & msg_t::more ? true : false;
-        if (!more)
-            dropping = false;
+        dropping = more;
 
         int rc = msg_->close ();
         errno_assert (rc == 0);
         rc = msg_->init ();
-        zmq_assert (rc == 0);
+        errno_assert (rc == 0);
         return 0;
     }
 
     while (active > 0) {
-        if (pipes [current]->write (msg_)) {
-            more = msg_->flags () & msg_t::more ? true : false;
+        if (pipes [current]->write (msg_))
             break;
-        }
 
         zmq_assert (!more);
         active--;
@@ -110,6 +108,7 @@ int zmq::lb_t::send (msg_t *msg_, int flags_)
 
     //  If it's final part of the message we can fluch it downstream and
     //  continue round-robinning (load balance).
+    more = msg_->flags () & msg_t::more? true: false;
     if (!more) {
         pipes [current]->flush ();
         current = (current + 1) % active;
@@ -131,17 +130,9 @@ bool zmq::lb_t::has_out ()
 
     while (active > 0) {
 
-        //  Check whether zero-sized message can be written to the pipe.
-        msg_t msg;
-        int rc = msg.init ();
-        errno_assert (rc == 0);
-        if (pipes [current]->check_write (&msg)) {
-            rc = msg.close ();
-            errno_assert (rc == 0);
+        //  Check whether a pipe has room for another message.
+        if (pipes [current]->check_write ())
             return true;
-        }
-        rc = msg.close ();
-        errno_assert (rc == 0);
 
         //  Deactivate the pipe.
         active--;

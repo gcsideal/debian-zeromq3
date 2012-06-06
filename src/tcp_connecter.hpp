@@ -26,13 +26,14 @@
 #include "own.hpp"
 #include "stdint.hpp"
 #include "io_object.hpp"
-#include "tcp_address.hpp"
+#include "../include/zmq.h"
 
 namespace zmq
 {
 
     class io_thread_t;
     class session_base_t;
+    struct address_t;
 
     class tcp_connecter_t : public own_t, public io_object_t
     {
@@ -42,7 +43,7 @@ namespace zmq
         //  connection process.
         tcp_connecter_t (zmq::io_thread_t *io_thread_,
             zmq::session_base_t *session_, const options_t &options_,
-            const char *address_, bool delay_);
+            const address_t *addr_, bool delay_);
         ~tcp_connecter_t ();
 
     private:
@@ -69,12 +70,9 @@ namespace zmq
         //  Returns the currently used interval
         int get_new_reconnect_ivl ();
 
-        //  Set address to connect to.
-        int set_address (const char *addr_);
-
         //  Open TCP connecting socket. Returns -1 in case of error,
-        //  0 if connect was successfull immediately and 1 if async connect
-        //  was launched.
+        //  0 if connect was successfull immediately. Returns -1 with
+        //  EAGAIN errno if async connect was launched.
         int open ();
 
         //  Close the connecting socket.
@@ -84,8 +82,8 @@ namespace zmq
         //  retired_fd if the connection was unsuccessfull.
         fd_t connect ();
 
-        //  Address to connect to.
-        tcp_address_t address;
+        //  Address to connect to. Owned by session_base_t.
+        const address_t *addr;
 
         //  Underlying socket.
         fd_t s;
@@ -105,6 +103,9 @@ namespace zmq
 
         //  Current reconnect ivl, updated for backoff strategy
         int current_reconnect_ivl;
+
+        // String representation of endpoint to connect to
+        std::string endpoint;
 
         tcp_connecter_t (const tcp_connecter_t&);
         const tcp_connecter_t &operator = (const tcp_connecter_t&);

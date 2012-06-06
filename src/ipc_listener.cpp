@@ -33,6 +33,7 @@
 #include "config.hpp"
 #include "err.hpp"
 #include "ip.hpp"
+#include "socket_base.hpp"
 
 #include <unistd.h>
 #include <sys/socket.h>
@@ -65,6 +66,7 @@ void zmq::ipc_listener_t::process_plug ()
 void zmq::ipc_listener_t::process_term (int linger_)
 {
     rm_fd (handle);
+    close ();
     own_t::process_term (linger_);
 }
 
@@ -74,8 +76,10 @@ void zmq::ipc_listener_t::in_event ()
 
     //  If connection was reset by the peer in the meantime, just ignore it.
     //  TODO: Handle specific errors like ENFILE/EMFILE etc.
-    if (fd == retired_fd)
+    if (fd == retired_fd) {
+        socket->monitor_event (ZMQ_EVENT_ACCEPT_FAILED, endpoint.c_str(), zmq_errno());
         return;
+    }
 
     //  Create the engine object for this connection.
     stream_engine_t *engine = new (std::nothrow) stream_engine_t (fd, options);
@@ -88,15 +92,35 @@ void zmq::ipc_listener_t::in_event ()
 
     //  Create and launch a session object. 
     session_base_t *session = session_base_t::create (io_thread, false, socket,
-        options, NULL, NULL);
+        options, NULL);
     errno_assert (session);
     session->inc_seqnum ();
     launch_child (session);
     send_attach (session, engine, false);
+    socket->monitor_event (ZMQ_EVENT_ACCEPTED, endpoint.c_str(), fd);
+}
+
+int zmq::ipc_listener_t::get_address (std::string &addr_)
+{
+    struct sockaddr_storage ss;
+    socklen_t sl = sizeof (ss);
+    int rc = getsockname (s, (sockaddr *) &ss, &sl);
+    if (rc != 0) {
+        addr_.clear ();
+        return rc;
+    }
+
+    ipc_address_t addr ((struct sockaddr *) &ss, sl);
+    return addr.to_string (addr_);
 }
 
 int zmq::ipc_listener_t::set_address (const char *addr_)
 {
+    // Allow wildcard file
+    if (*addr_ == '*') {
+        addr_ = tempnam(NULL, NULL);
+    }
+
     //  Get rid of the file associated with the UNIX domain socket that
     //  may have been left behind by the previous run of the application.
     ::unlink (addr_);
@@ -113,11 +137,14 @@ int zmq::ipc_listener_t::set_address (const char *addr_)
     if (s == -1)
         return -1;
 
+    address.to_string (endpoint);
+
     //  Bind the socket to the file path.
     rc = bind (s, address.addr (), address.addrlen ());
     if (rc != 0)
         return -1;
 
+    filename.assign(addr_);
     has_file = true;
 
     //  Listen for incomming connections.
@@ -125,25 +152,31 @@ int zmq::ipc_listener_t::set_address (const char *addr_)
     if (rc != 0)
         return -1;
 
-    return 0;  
+    socket->monitor_event (ZMQ_EVENT_LISTENING, addr_, s);
+    return 0;
 }
 
 int zmq::ipc_listener_t::close ()
 {
     zmq_assert (s != retired_fd);
     int rc = ::close (s);
-    if (rc != 0)
+    if (rc != 0) {
+        socket->monitor_event (ZMQ_EVENT_CLOSE_FAILED, endpoint.c_str(), zmq_errno());
         return -1;
-    s = retired_fd;
+    }
 
     //  If there's an underlying UNIX domain socket, get rid of the file it
     //  is associated with.
     if (has_file && !filename.empty ()) {
         rc = ::unlink(filename.c_str ());
-        if (rc != 0)
+        if (rc != 0) {
+            socket->monitor_event (ZMQ_EVENT_CLOSE_FAILED, endpoint.c_str(), zmq_errno());
             return -1;
+        }
     }
 
+    socket->monitor_event (ZMQ_EVENT_CLOSED, endpoint.c_str(), s);
+    s = retired_fd;
     return 0;
 }
 
@@ -162,4 +195,3 @@ zmq::fd_t zmq::ipc_listener_t::accept ()
 }
 
 #endif
-

@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
-<meta name="generator" content="AsciiDoc 8.6.3" />
+<meta name="generator" content="AsciiDoc 8.6.4" />
 <title>zmq_getsockopt(3)</title>
 <style type="text/css">
 /* Sans-serif font. */
@@ -394,6 +394,42 @@ div.toclevel4 {
   font-size: 0.9em;
 }
 
+span.aqua { color: aqua; }
+span.black { color: black; }
+span.blue { color: blue; }
+span.fuchsia { color: fuchsia; }
+span.gray { color: gray; }
+span.green { color: green; }
+span.lime { color: lime; }
+span.maroon { color: maroon; }
+span.navy { color: navy; }
+span.olive { color: olive; }
+span.purple { color: purple; }
+span.red { color: red; }
+span.silver { color: silver; }
+span.teal { color: teal; }
+span.white { color: white; }
+span.yellow { color: yellow; }
+
+span.aqua-background { background: aqua; }
+span.black-background { background: black; }
+span.blue-background { background: blue; }
+span.fuchsia-background { background: fuchsia; }
+span.gray-background { background: gray; }
+span.green-background { background: green; }
+span.lime-background { background: lime; }
+span.maroon-background { background: maroon; }
+span.navy-background { background: navy; }
+span.olive-background { background: olive; }
+span.purple-background { background: purple; }
+span.red-background { background: red; }
+span.silver-background { background: silver; }
+span.teal-background { background: teal; }
+span.white-background { background: white; }
+span.yellow-background { background: yellow; }
+
+span.big { font-size: 2em; }
+span.small { font-size: 0.6em; }
 /* Overrides for manpage documents */
 h1 {
   padding-top: 0.5em;
@@ -1209,7 +1245,7 @@ all
 <div class="paragraph"><p>The <em>ZMQ_RECONNECT_IVL</em> option shall retrieve the initial reconnection interval
 for the specified <em>socket</em>.  The reconnection interval is the period ØMQ shall
 wait between attempts to reconnect disconnected peers when using
-connection-oriented transports.</p></div>
+connection-oriented transports. The value -1 means no reconnection.</p></div>
 <div class="admonitionblock">
 <table><tr>
 <td class="icon">
@@ -1668,6 +1704,19 @@ state with a subsequent retrieval of the <em>ZMQ_EVENTS</em> option.</td>
 <div class="admonitionblock">
 <table><tr>
 <td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">The returned file descriptor is also used internally by the <em>zmq_send</em>
+and <em>zmq_recv</em> functions. As the descriptor is edge triggered, applications
+must update the state of <em>ZMQ_EVENTS</em> after each invocation of <em>zmq_send</em>
+or <em>zmq_recv</em>.To be more explicit: after calling <em>zmq_send</em> the socket may
+become readable (and vice versa) without triggering a read event on the
+file descriptor.</td>
+</tr></table>
+</div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
 <div class="title">Caution</div>
 </td>
 <td class="content">The returned file descriptor is intended for use with a <em>poll</em> or
@@ -1798,6 +1847,263 @@ all
 </tr>
 </table></div>
 </div>
+<div class="sect2">
+<h3 id="_zmq_last_endpoint_retrieve_the_last_endpoint_set">ZMQ_LAST_ENDPOINT: Retrieve the last endpoint set</h3>
+<div class="paragraph"><p>The <em>ZMQ_LAST_ENDPOINT</em> option shall retrieve the last endpoint bound for
+TCP and IPC transports. The returned value will be a string in the form of
+a ZMQ DSN. Note that if the TCP host is INADDR_ANY, indicated by a *, then
+the returned address will be 0.0.0.0 (for IPv4).</p></div>
+<div class="hdlist"><table>
+<tr>
+<td class="hdlist1">
+Option value type
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+character string
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Option value unit
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+N/A
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Default value
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+NULL
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Applicable socket types
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+all, when binding TCP or IPC transports
+</p>
+</td>
+</tr>
+</table></div>
+</div>
+<div class="sect2">
+<h3 id="_zmq_tcp_keepalive_override_so_keepalive_socket_option">ZMQ_TCP_KEEPALIVE: Override SO_KEEPALIVE socket option</h3>
+<div class="paragraph"><p>Override <em>SO_KEEPALIVE</em> socket option(where supported by OS).
+The default value of <tt>-1</tt> means to skip any overrides and leave it to OS default.</p></div>
+<div class="hdlist"><table>
+<tr>
+<td class="hdlist1">
+Option value type
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+int
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Option value unit
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+-1,0,1
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Default value
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+-1 (leave to OS default)
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Applicable socket types
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+all, when using TCP transports.
+</p>
+</td>
+</tr>
+</table></div>
+</div>
+<div class="sect2">
+<h3 id="_zmq_tcp_keepalive_idle_override_tcp_keepcnt_or_tcp_keepalive_on_some_os">ZMQ_TCP_KEEPALIVE_IDLE: Override TCP_KEEPCNT(or TCP_KEEPALIVE on some OS)</h3>
+<div class="paragraph"><p>Override <em>TCP_KEEPCNT</em>(or <em>TCP_KEEPALIVE</em> on some OS) socket option(where supported by OS).
+The default value of <tt>-1</tt> means to skip any overrides and leave it to OS default.</p></div>
+<div class="hdlist"><table>
+<tr>
+<td class="hdlist1">
+Option value type
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+int
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Option value unit
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+-1,&gt;0
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Default value
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+-1 (leave to OS default)
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Applicable socket types
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+all, when using TCP transports.
+</p>
+</td>
+</tr>
+</table></div>
+</div>
+<div class="sect2">
+<h3 id="_zmq_tcp_keepalive_cnt_override_tcp_keepcnt_socket_option">ZMQ_TCP_KEEPALIVE_CNT: Override TCP_KEEPCNT socket option</h3>
+<div class="paragraph"><p>Override <em>TCP_KEEPCNT</em> socket option(where supported by OS).
+The default value of <tt>-1</tt> means to skip any overrides and leave it to OS default.</p></div>
+<div class="hdlist"><table>
+<tr>
+<td class="hdlist1">
+Option value type
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+int
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Option value unit
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+-1,&gt;0
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Default value
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+-1 (leave to OS default)
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Applicable socket types
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+all, when using TCP transports.
+</p>
+</td>
+</tr>
+</table></div>
+</div>
+<div class="sect2">
+<h3 id="_zmq_tcp_keepalive_intvl_override_tcp_keepintvl_socket_option">ZMQ_TCP_KEEPALIVE_INTVL: Override TCP_KEEPINTVL socket option</h3>
+<div class="paragraph"><p>Override <em>TCP_KEEPINTVL</em> socket option(where supported by OS).
+The default value of <tt>-1</tt> means to skip any overrides and leave it to OS default.</p></div>
+<div class="hdlist"><table>
+<tr>
+<td class="hdlist1">
+Option value type
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+int
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Option value unit
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+-1,&gt;0
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Default value
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+-1 (leave to OS default)
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Applicable socket types
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+all, when using TCP transports.
+</p>
+</td>
+</tr>
+</table></div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1874,16 +2180,16 @@ assert (rc == 0);</tt></pre>
 <div class="sect1">
 <h2 id="_authors">AUTHORS</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>The ØMQ documentation was written by Martin Sustrik &lt;<a href="mailto:sustrik@250bpm.com">sustrik@250bpm.com</a>&gt; and
-Martin Lucina &lt;<a href="mailto:martin@lucina.net">martin@lucina.net</a>&gt;.</p></div>
+<div class="paragraph"><p>This ØMQ manual page was written by Martin Sustrik &lt;<a href="mailto:sustrik@250bpm.com">sustrik@250bpm.com</a>&gt; and
+Martin Lucina &lt;<a href="mailto:mato@kotelna.sk">mato@kotelna.sk</a>&gt;.</p></div>
 </div>
 </div>
 </div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-ØMQ 3.1.0<br />
-Last updated 2011-12-18 11:17:56 CET
+ØMQ 3.2.0<br />
+Last updated 2012-06-05 09:39:30 CEST
 </div>
 </div>
 </body>

@@ -2,12 +2,12 @@
 .\"     Title: zmq_recvmsg
 .\"    Author: [see the "AUTHORS" section]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 12/18/2011
+.\"      Date: 06/05/2012
 .\"    Manual: 0MQ Manual
-.\"    Source: 0MQ 3.1.0
+.\"    Source: 0MQ 3.2.0
 .\"  Language: English
 .\"
-.TH "ZMQ_RECVMSG" "3" "12/18/2011" "0MQ 3\&.1\&.0" "0MQ Manual"
+.TH "ZMQ_RECVMSG" "3" "06/05/2012" "0MQ 3\&.2\&.0" "0MQ Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -47,9 +47,9 @@ set to EAGAIN\&.
 .RE
 .SS "Multi\-part messages"
 .sp
-A 0MQ message is composed of 1 or more message parts\&. Each message part is an independent \fIzmq_msg_t\fR in its own right\&. 0MQ ensures atomic delivery of messages; peers shall receive either all \fImessage parts\fR of a message or none at all\&. The total number of message parts is unlimited except by available memory\&.
+A 0MQ message is composed of 1 or more message parts\&. Each message part is an independent \fIzmq_msg_t\fR in its own right\&. 0MQ ensures atomic delivery of messages: peers shall receive either all \fImessage parts\fR of a message or none at all\&. The total number of message parts is unlimited except by available memory\&.
 .sp
-An application that processes multipart messages must use the \fIZMQ_RCVMORE\fR \fBzmq_getsockopt\fR(3) option after calling \fIzmq_recvmsg()\fR to determine if there are further parts to receive\&.
+An application that processes multi\-part messages must use the \fIZMQ_RCVMORE\fR \fBzmq_getsockopt\fR(3) option after calling \fIzmq_recvmsg()\fR to determine if there are further parts to receive\&.
 .SH "RETURN VALUE"
 .sp
 The \fIzmq_recvmsg()\fR function shall return number of bytes in the message if successful\&. Otherwise it shall return \-1 and set \fIerrno\fR to one of the values defined below\&.

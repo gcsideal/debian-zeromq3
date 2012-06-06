@@ -47,15 +47,15 @@ zmq::stream_engine_t::stream_engine_t (fd_t fd_, const options_t &options_) :
     inpos (NULL),
     insize (0),
     decoder (in_batch_size, options_.maxmsgsize),
+    input_error (false),
     outpos (NULL),
     outsize (0),
     encoder (out_batch_size),
     session (NULL),
-    leftover_session (NULL),
     options (options_),
     plugged (false)
 {
-    //  Get the socket into non-blocking mode.
+    //  Put the socket into non-blocking mode.
     unblock_socket (s);
 
     //  Set the socket buffer limits for the underlying socket.
@@ -108,7 +108,6 @@ void zmq::stream_engine_t::plug (io_thread_t *io_thread_,
 {
     zmq_assert (!plugged);
     plugged = true;
-    leftover_session = NULL;
 
     //  Connect to session object.
     zmq_assert (!session);
@@ -116,6 +115,8 @@ void zmq::stream_engine_t::plug (io_thread_t *io_thread_,
     encoder.set_session (session_);
     decoder.set_session (session_);
     session = session_;
+
+    session->get_address (endpoint);
 
     //  Connect to I/O threads poller object.
     io_object_t::plug (io_thread_);
@@ -141,8 +142,8 @@ void zmq::stream_engine_t::unplug ()
     //  Disconnect from session object.
     encoder.set_session (NULL);
     decoder.set_session (NULL);
-    leftover_session = session;
     session = NULL;
+    endpoint.clear();
 }
 
 void zmq::stream_engine_t::terminate ()
@@ -181,12 +182,8 @@ void zmq::stream_engine_t::in_event ()
     else {
 
         //  Stop polling for input if we got stuck.
-        if (processed < insize) {
-
-            //  This may happen if queue limits are in effect.
-            if (plugged)
-                reset_pollin (handle);
-        }
+        if (processed < insize)
+            reset_pollin (handle);
 
         //  Adjust the buffer.
         inpos += processed;
@@ -194,16 +191,20 @@ void zmq::stream_engine_t::in_event ()
     }
 
     //  Flush all messages the decoder may have produced.
-    //  If IO handler has unplugged engine, flush transient IO handler.
-    if (unlikely (!plugged)) {
-        zmq_assert (leftover_session);
-        leftover_session->flush ();
-    } else {
-        session->flush ();
-    }
+    session->flush ();
 
-    if (session && disconnection)
-        error ();
+    //  Input error has occurred. If the last decoded
+    //  message has already been accepted, we terminate
+    //  the engine immediately. Otherwise, we stop
+    //  waiting for input events and postpone the termination
+    //  until after the session has accepted the message.
+    if (disconnection) {
+        input_error = true;
+        if (decoder.stalled ())
+            reset_pollin (handle);
+        else
+            error ();
+    }
 }
 
 void zmq::stream_engine_t::out_event ()
@@ -213,13 +214,6 @@ void zmq::stream_engine_t::out_event ()
 
         outpos = NULL;
         encoder.get_data (&outpos, &outsize);
-
-        //  If IO handler has unplugged engine, flush transient IO handler.
-        if (unlikely (!plugged)) {
-            zmq_assert (leftover_session);
-            leftover_session->flush ();
-            return;
-        }
 
         //  If there is no data to send, stop polling for output.
         if (outsize == 0) {
@@ -235,9 +229,11 @@ void zmq::stream_engine_t::out_event ()
     //  written should be reasonably modest.
     int nbytes = write (outpos, outsize);
 
-    //  Handle problems with the connection.
+    //  IO error has occurred. We stop waiting for output events.
+    //  The engine is not terminated until we detect input error;
+    //  this is necessary to prevent losing incomming messages.
     if (nbytes == -1) {
-        error ();
+        reset_pollout (handle);
         return;
     }
 
@@ -258,6 +254,17 @@ void zmq::stream_engine_t::activate_out ()
 
 void zmq::stream_engine_t::activate_in ()
 {
+    if (input_error) {
+        //  There was an input error but the engine could not
+        //  be terminated (due to the stalled decoder).
+        //  Flush the pending message and terminate the engine now.
+        decoder.process_buffer (inpos, 0);
+        zmq_assert (!decoder.stalled ());
+        session->flush ();
+        error ();
+        return;
+    }
+
     set_pollin (handle);
 
     //  Speculative read.
@@ -267,6 +274,7 @@ void zmq::stream_engine_t::activate_in ()
 void zmq::stream_engine_t::error ()
 {
     zmq_assert (session);
+    session->monitor_event (ZMQ_EVENT_DISCONNECTED, endpoint.c_str(), s);
     session->detach ();
     unplug ();
     delete this;
@@ -284,7 +292,7 @@ int zmq::stream_engine_t::write (const void *data_, size_t size_)
         return 0;
 		
     //  Signalise peer failure.
-    if (nbytes == -1 && (
+    if (nbytes == SOCKET_ERROR && (
           WSAGetLastError () == WSAENETDOWN ||
           WSAGetLastError () == WSAENETRESET ||
           WSAGetLastError () == WSAEHOSTUNREACH ||
@@ -294,7 +302,7 @@ int zmq::stream_engine_t::write (const void *data_, size_t size_)
         return -1;
 
     wsa_assert (nbytes != SOCKET_ERROR);
-    return (size_t) nbytes;
+    return nbytes;
 
 #else
 
@@ -308,7 +316,8 @@ int zmq::stream_engine_t::write (const void *data_, size_t size_)
         return 0;
 
     //  Signalise peer failure.
-    if (nbytes == -1 && (errno == ECONNRESET || errno == EPIPE))
+    if (nbytes == -1 && (errno == ECONNRESET || errno == EPIPE ||
+          errno == ETIMEDOUT))
         return -1;
 
     errno_assert (nbytes != -1);
@@ -329,7 +338,7 @@ int zmq::stream_engine_t::read (void *data_, size_t size_)
         return 0;
 
     //  Connection failure.
-    if (nbytes == -1 && (
+    if (nbytes == SOCKET_ERROR && (
           WSAGetLastError () == WSAENETDOWN ||
           WSAGetLastError () == WSAENETRESET ||
           WSAGetLastError () == WSAECONNABORTED ||
@@ -345,7 +354,7 @@ int zmq::stream_engine_t::read (void *data_, size_t size_)
     if (nbytes == 0)
         return -1; 
 
-    return (size_t) nbytes;
+    return nbytes;
 
 #else
 

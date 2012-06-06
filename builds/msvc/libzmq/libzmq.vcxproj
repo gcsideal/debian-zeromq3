@@ -103,9 +103,12 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\src\address.cpp" />
     <ClCompile Include="..\..\..\src\clock.cpp" />
     <ClCompile Include="..\..\..\src\ctx.cpp" />
+    <ClCompile Include="..\..\..\src\dealer.cpp" />
     <ClCompile Include="..\..\..\src\decoder.cpp" />
+    <ClCompile Include="..\..\..\src\device.cpp" />
     <ClCompile Include="..\..\..\src\devpoll.cpp" />
     <ClCompile Include="..\..\..\src\dist.cpp" />
     <ClCompile Include="..\..\..\src\encoder.cpp" />
@@ -143,6 +146,7 @@
     <ClCompile Include="..\..\..\src\reaper.cpp" />
     <ClCompile Include="..\..\..\src\rep.cpp" />
     <ClCompile Include="..\..\..\src\req.cpp" />
+    <ClCompile Include="..\..\..\src\router.cpp" />
     <ClCompile Include="..\..\..\src\select.cpp" />
     <ClCompile Include="..\..\..\src\session_base.cpp" />
     <ClCompile Include="..\..\..\src\signaler.cpp" />
@@ -155,8 +159,6 @@
     <ClCompile Include="..\..\..\src\thread.cpp" />
     <ClCompile Include="..\..\..\src\trie.cpp" />
     <ClCompile Include="..\..\..\src\xpub.cpp" />
-    <ClCompile Include="..\..\..\src\xrep.cpp" />
-    <ClCompile Include="..\..\..\src\xreq.cpp" />
     <ClCompile Include="..\..\..\src\xsub.cpp" />
     <ClCompile Include="..\..\..\src\zmq.cpp" />
     <ClCompile Include="..\..\..\src\zmq_utils.cpp" />
@@ -164,6 +166,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\include\zmq.h" />
     <ClInclude Include="..\..\..\include\zmq_utils.h" />
+    <ClInclude Include="..\..\..\src\address.hpp" />
     <ClInclude Include="..\..\..\src\array.hpp" />
     <ClInclude Include="..\..\..\src\atomic_counter.hpp" />
     <ClInclude Include="..\..\..\src\atomic_ptr.hpp" />
