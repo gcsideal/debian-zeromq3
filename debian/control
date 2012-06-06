@@ -5,8 +5,7 @@ Maintainer: Alessandro Ghedini <ghedo@debian.org>
 Build-Depends: debhelper (>= 9),
  autotools-dev,
  libpgm-dev,
- pkg-config,
- uuid-dev
+ pkg-config
 Standards-Version: 3.9.3
 Vcs-Browser: http://git.debian.org/?p=collab-maint/zeromq3.git
 Vcs-Git: git://git.debian.org/collab-maint/zeromq3.git
