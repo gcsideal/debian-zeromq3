@@ -1,0 +1,17 @@
+Description: Fix an "unused variable 'sa_family' [-Werror=unused-variable]" error
+Origin: vendor
+Forwarded: no
+Author: Alessandro Ghedini <ghedo@debian.org>
+Reviewed-by: Alessandro Ghedini <ghedo@debian.org>
+Last-Update: 2012-06-06
+
+--- a/src/pgm_socket.cpp
++++ b/src/pgm_socket.cpp
+@@ -86,7 +86,6 @@
+ 
+     pgm_error_t *pgm_error = NULL;
+     struct pgm_addrinfo_t hints, *res = NULL;
+-    sa_family_t sa_family;
+ 
+     memset (&hints, 0, sizeof (hints));
+     hints.ai_family = AF_UNSPEC;
