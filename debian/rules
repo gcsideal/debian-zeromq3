@@ -1,9 +1,5 @@
 #!/usr/bin/make -f
 
-DEB_SOURCE_NAME=zeromq3
-DEB_UPSTREAM_VERSION=$(shell dpkg-parsechangelog | sed -rne 's,^Version: ([^+]+).*,\1,p')
-DEB_ROOT_VERSION=$(shell dpkg-parsechangelog | sed -rne 's,^Version: ([^~]+).*,\1,p')
-
 %:
 	dh $@ --with=autotools-dev
 
@@ -12,15 +8,3 @@ override_dh_auto_configure:
 
 override_dh_strip:
 	dh_strip --dbg-package=libzmq3-dbg
-
-get-orig-source:
-	uscan --noconf --rename --download-current-version --destdir=.
-	tar -xf $(DEB_SOURCE_NAME)_$(DEB_UPSTREAM_VERSION).orig.tar.gz
-	rm $(DEB_SOURCE_NAME)_$(DEB_UPSTREAM_VERSION).orig.tar.gz
-	$(RM) $(DEB_SOURCE_NAME)-$(DEB_ROOT_VERSION)/foreign/openpgm/*.gz
-	$(RM) -r $(DEB_SOURCE_NAME)-$(DEB_ROOT_VERSION)/foreign/xmlParser
-	mv $(DEB_SOURCE_NAME)-$(DEB_ROOT_VERSION) $(DEB_SOURCE_NAME)-$(DEB_UPSTREAM_VERSION).orig
-	GZIP=--best tar -cz --owner root --group root --mode a+rX \
-		-f $(DEB_SOURCE_NAME)_$(DEB_UPSTREAM_VERSION)+dfsg.orig.tar.gz \
-		$(DEB_SOURCE_NAME)-$(DEB_UPSTREAM_VERSION).orig
-	rm -r $(DEB_SOURCE_NAME)-$(DEB_UPSTREAM_VERSION).orig
