@@ -1,3 +1,9 @@
+zeromq3 (3.2.0-rc1+dfsg-1) UNRELEASED; urgency=low
+
+  * New upstream RC release
+
+ -- Alessandro Ghedini <ghedo@debian.org>  Wed, 06 Jun 2012 11:03:14 +0200
+
 zeromq3 (3.1.0~beta+dfsg-2) experimental; urgency=low
 
   * libzmq3-dev Conflicts with libzmq-dev (Closes: #676160)
