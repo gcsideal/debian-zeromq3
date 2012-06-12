@@ -1,4 +1,4 @@
-zeromq3 (3.2.0~rc1+dfsg-1) UNRELEASED; urgency=low
+zeromq3 (3.2.0~rc1+dfsg-1) experimental; urgency=low
 
   * New upstream RC release
   * Use repack.{local,stub} instead of get-orig-source rule
@@ -7,7 +7,7 @@ zeromq3 (3.2.0~rc1+dfsg-1) UNRELEASED; urgency=low
   * Add 02_check-ifdef-SO_NOSIGPIPE.patch to fix kfreebsd build
   * Add 03_fix-test_shutdown_stress-segfault.patch
 
- -- Alessandro Ghedini <ghedo@debian.org>  Wed, 06 Jun 2012 11:03:14 +0200
+ -- Alessandro Ghedini <ghedo@debian.org>  Tue, 12 Jun 2012 10:53:58 +0200
 
 zeromq3 (3.1.0~beta+dfsg-2) experimental; urgency=low
 
