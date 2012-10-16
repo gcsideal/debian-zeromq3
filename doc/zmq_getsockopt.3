@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: zmq_getsockopt
 .\"    Author: [see the "AUTHORS" section]
-.\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 06/05/2012
+.\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
+.\"      Date: 10/15/2012
 .\"    Manual: 0MQ Manual
-.\"    Source: 0MQ 3.2.0
+.\"    Source: 0MQ 3.2.1
 .\"  Language: English
 .\"
-.TH "ZMQ_GETSOCKOPT" "3" "06/05/2012" "0MQ 3\&.2\&.0" "0MQ Manual"
+.TH "ZMQ_GETSOCKOPT" "3" "10/15/2012" "0MQ 3\&.2\&.1" "0MQ Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -858,7 +858,30 @@ all, when using TCP transports\&.
 T}
 .TE
 .sp 1
-.SS "ZMQ_FD: Retrieve file descriptor associated with the socket"
+.sp
+ZMQ_DELAY_ATTACH_ON_CONNECT
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+Retrieve the state of the attach on connect value\&. If set to `1`, will delay the
+attachment of a pipe on connect until the underlying connection has completed\&.
+This will cause the socket to block if there are no other connections, but will
+prevent queues from filling on pipes awaiting connection\&.
+
+[horizontal]
+Option value type:: int
+Option value unit:: boolean
+Default value:: 0 (false)
+Applicable socket types:: all, primarily when using TCP/IPC transports\&.
+
+
+ZMQ_FD: Retrieve file descriptor associated with the socket
+.fi
+.if n \{\
+.RE
+.\}
 .sp
 The \fIZMQ_FD\fR option shall retrieve the file descriptor associated with the specified \fIsocket\fR\&. The returned file descriptor can be used to integrate the socket into an existing event loop; the 0MQ library shall signal any pending events on the socket in an \fIedge\-triggered\fR fashion by making the file descriptor become ready for reading\&.
 .if n \{\
