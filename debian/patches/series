@@ -1,3 +1,0 @@
-01_fix-unused-variable-error.patch
-02_check-ifdef-SO_NOSIGPIPE.patch
-03_fix-test_shutdown_stress-segfault.patch
