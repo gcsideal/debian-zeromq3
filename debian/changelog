@@ -1,9 +1,9 @@
-zeromq3 (3.2.1~rc2+dfsg-1) UNRELEASED; urgency=low
+zeromq3 (3.2.1~rc2+dfsg-1) experimental; urgency=low
 
-  * New upstream release
+  * New upstream RC release (Closes: #690704)
   * Bump Standards-Version to 3.9.4 (no changes needed)
 
- -- Alessandro Ghedini <ghedo@debian.org>  Tue, 16 Oct 2012 19:23:50 +0200
+ -- Alessandro Ghedini <ghedo@debian.org>  Tue, 16 Oct 2012 19:49:30 +0200
 
 zeromq3 (3.2.0~rc1+dfsg-1) experimental; urgency=low
 
