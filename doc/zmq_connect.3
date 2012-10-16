@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: zmq_connect
 .\"    Author: [see the "AUTHORS" section]
-.\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 06/05/2012
+.\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
+.\"      Date: 10/15/2012
 .\"    Manual: 0MQ Manual
-.\"    Source: 0MQ 3.2.0
+.\"    Source: 0MQ 3.2.1
 .\"  Language: English
 .\"
-.TH "ZMQ_CONNECT" "3" "06/05/2012" "0MQ 3\&.2\&.0" "0MQ Manual"
+.TH "ZMQ_CONNECT" "3" "10/15/2012" "0MQ 3\&.2\&.1" "0MQ Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -64,7 +64,7 @@ reliable multicast transport using PGM, see
 \fBzmq_pgm\fR(7)
 .RE
 .sp
-With the exception of \fIZMQ_PAIR\fR sockets, a single socket may be connected to multiple endpoints using \fIzmq_connect()\fR, while simultaneously accepting incoming connections from multiple endpoints bound to the socket using \fIzmq_bind()\fR\&. Refer to \fBzmq_socket\fR(3) for a description of the exact semantics involved when connecting or binding a socket to multiple endpoints\&.
+ZeroMQ sockets support one\-to\-many and many\-to\-one semantics\&. With the exception of \fIZMQ_PAIR\fR sockets every ZeroMQ socket type supports being bound with \fIzmq_bind()\fR as a singular endpoint or connecting with \fIzmq_connect()\fR as one of many endpoints\&. This allows combinations such as 1 ZMQ_REP to 100 ZMQ_REP and 100 ZMQ_REQ to 1 ZMQ_REP socket connections\&. Refer to \fBzmq_socket\fR(3) for a description of the exact semantics involved when connecting or binding a socket to multiple endpoints\&.
 .if n \{\
 .sp
 .\}
@@ -78,7 +78,7 @@ With the exception of \fIZMQ_PAIR\fR sockets, a single socket may be connected t
 .ps -1
 .br
 .sp
-The connection will not be performed immediately but as needed by 0MQ\&. Thus a successful invocation of \fIzmq_connect()\fR does not indicate that a physical connection was or can actually be established\&.
+The connection will not be performed immediately but as needed by 0MQ\&. Thus a successful invocation of \fIzmq_connect()\fR does not indicate that a physical connection was or can actually be established\&. Because of this, for most socket types the order in which a listening socket is bound and a connecting socket is connected does not matter\&. However, for inproc:// scheme sockets, the zmq_bind() must be executed before any sockets zmq_connect() to that endpoint\&. Refer to \fBzmq_inproc\fR(7) for more details\&.
 .sp .5v
 .RE
 .SH "RETURN VALUE"
