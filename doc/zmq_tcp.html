@@ -757,10 +757,11 @@ your first choice.</p></div>
 <div class="sect1">
 <h2 id="_addressing">ADDRESSING</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>A ØMQ address string consists of two parts as follows:
-<em>transport</em><tt>://</tt><em>endpoint</em>. The <em>transport</em> part specifies the underlying
-transport protocol to use, and for the TCP transport shall be set to <tt>tcp</tt>.
-The meaning of the <em>endpoint</em> part for the TCP transport is defined below.</p></div>
+<div class="paragraph"><p>A ØMQ endpoint is a string consisting of a <em>transport</em><tt>://</tt> followed by an
+<em>address</em>. The <em>transport</em> specifies the underlying protocol to use. The
+<em>address</em> specifies the transport-specific address to connect to.</p></div>
+<div class="paragraph"><p>For the TCP transport, the transport is <tt>tcp</tt>, and the meaning of the
+<em>address</em> part is defined below.</p></div>
 <div class="sect2">
 <h3 id="_assigning_a_local_address_to_a_socket">Assigning a local address to a socket</h3>
 <div class="paragraph"><p>When assigning a local address to a socket using <em>zmq_bind()</em> with the <em>tcp</em>
@@ -781,21 +782,26 @@ The primary IPv4 or IPv6 address assigned to the interface, in its numeric
 </li>
 <li>
 <p>
-The interface name as defined by the operating system.
+The non-portable interface name as defined by the operating system.
 </p>
 </li>
 </ul></div>
-<div class="admonitionblock">
-<table><tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">Interface names are not standardised in any way and should be assumed to
-be arbitrary and platform dependent. On Win32 platforms no short interface
-names exist, thus only the primary IP address may be used to specify an
-<em>interface</em>.</td>
-</tr></table>
-</div>
+<div class="paragraph"><p>The TCP port number may be specified by:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+A numeric value, usually above 1024 on POSIX systems.
+</p>
+</li>
+<li>
+<p>
+The wild-card <tt>*</tt>, meaning a system-assigned ephemeral port.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>When using ephemeral ports, the caller should retrieve the actual assigned
+port using the ZMQ_LAST_ENDPOINT socket option. See <a href="zmq_getsockopt.html">zmq_getsockopt(3)</a>
+for details.</p></div>
 </div>
 <div class="sect2">
 <h3 id="_connecting_a_socket">Connecting a socket</h3>
@@ -811,72 +817,11 @@ The DNS name of the peer.
 </li>
 <li>
 <p>
-The IPv4 or IPv6 address of the peer, in it&#8217;s numeric representation.
+The IPv4 or IPv6 address of the peer, in its numeric representation.
 </p>
 </li>
 </ul></div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_wire_format">WIRE FORMAT</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>ØMQ messages are transmitted over TCP in frames consisting of an encoded
-<em>payload length</em>, followed by a <em>flags</em> field and the message body. The <em>payload
-length</em> is defined as the combined length in octets of the message body and the
-<em>flags</em> field.</p></div>
-<div class="paragraph"><p>For frames with a <em>payload length</em> not exceeding 254 octets, the <em>payload
-length</em> shall be encoded as a single octet.  The minimum valid <em>payload length</em>
-of a frame is 1 octet, thus a <em>payload length</em> of 0 octets is invalid and such
-frames SHOULD be ignored.</p></div>
-<div class="paragraph"><p>For frames with a <em>payload length</em> exceeding 254 octets, the <em>payload length</em>
-shall be encoded as a single octet with the value <tt>255</tt> followed by the
-<em>payload length</em> represented as a 64-bit unsigned integer in network byte
-order.</p></div>
-<div class="paragraph"><p>The <em>flags</em> field consists of a single octet containing various control flags:</p></div>
-<div class="paragraph"><p>Bit 0 (MORE): <em>More message parts to follow</em>. A value of 0 indicates that there
-are no more message parts to follow; or that the message being sent is not a
-multi-part message. A value of 1 indicates that the message being sent is a
-multi-part message and more message parts are to follow.</p></div>
-<div class="paragraph"><p>Bits 1-7: <em>Reserved</em>. Bits 1-7 are reserved for future expansion and MUST be
-set to zero.</p></div>
-<div class="paragraph"><p>The following ABNF grammar represents a single <em>frame</em>:</p></div>
-<div class="literalblock">
-<div class="content">
-<pre><tt>    frame           = (length flags data)
-    length          = OCTET / (escape 8OCTET)
-    flags           = OCTET
-    escape          = %xFF
-    data            = *OCTET</tt></pre>
-</div></div>
-<div class="paragraph"><p>The following diagram illustrates the layout of a frame with a <em>payload length</em>
-not exceeding 254 octets:</p></div>
-<div class="literalblock">
-<div class="content">
-<pre><tt>0                   1                   2                   3
-0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-| Payload length|     Flags     |       Message body        ... |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-| Message body ...
-+-+-+-+-+-+-+- ...</tt></pre>
-</div></div>
-<div class="paragraph"><p>The following diagram illustrates the layout of a frame with a <em>payload length</em>
-exceeding 254 octets:</p></div>
-<div class="literalblock">
-<div class="content">
-<pre><tt>0                   1                   2                   3
-0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|     0xff      |               Payload length              ... |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|                       Payload length                      ... |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-| Payload length|     Flags     |        Message body       ... |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|  Message body ...
-+-+-+-+-+-+-+-+ ...</tt></pre>
-</div></div>
 </div>
 </div>
 <div class="sect1">
@@ -885,23 +830,23 @@ exceeding 254 octets:</p></div>
 <div class="listingblock">
 <div class="title">Assigning a local address to a socket</div>
 <div class="content">
-<pre><tt>/* TCP port 5555 on all available interfaces */
-rc = zmq_bind(socket, "tcp://*:5555");
+<pre><tt>//  TCP port 5555 on all available interfaces
+rc = zmq_bind(socket, "tcp:/// :5555");
 assert (rc == 0);
-/* TCP port 5555 on the local loop-back interface on all platforms */
+//  TCP port 5555 on the local loop-back interface on all platforms
 rc = zmq_bind(socket, "tcp://127.0.0.1:5555");
 assert (rc == 0);
-/* TCP port 5555 on the first Ethernet network interface on Linux */
+//  TCP port 5555 on the first Ethernet network interface on Linux
 rc = zmq_bind(socket, "tcp://eth0:5555");
 assert (rc == 0);</tt></pre>
 </div></div>
 <div class="listingblock">
 <div class="title">Connecting a socket</div>
 <div class="content">
-<pre><tt>/* Connecting using an IP address */
+<pre><tt>//  Connecting using an IP address
 rc = zmq_connect(socket, "tcp://192.168.1.1:5555");
 assert (rc == 0);
-/* Connecting using a DNS name */
+//  Connecting using a DNS name
 rc = zmq_connect(socket, "tcp://server1:5555");
 assert (rc == 0);</tt></pre>
 </div></div>
@@ -921,16 +866,16 @@ assert (rc == 0);</tt></pre>
 <div class="sect1">
 <h2 id="_authors">AUTHORS</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>This ØMQ manual page was written by Martin Sustrik &lt;<a href="mailto:sustrik@250bpm.com">sustrik@250bpm.com</a>&gt; and
-Martin Lucina &lt;<a href="mailto:mato@kotelna.sk">mato@kotelna.sk</a>&gt;.</p></div>
+<div class="paragraph"><p>This ØMQ manual page was written by Pieter Hintjens &lt;<a href="mailto:ph@imatix.com">ph@imatix.com</a>&gt;,
+Martin Sustrik &lt;<a href="mailto:sustrik@250bpm.com">sustrik@250bpm.com</a>&gt; and Martin Lucina &lt;<a href="mailto:mato@kotelna.sk">mato@kotelna.sk</a>&gt;.</p></div>
 </div>
 </div>
 </div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-ØMQ 3.2.1<br />
-Last updated 2012-10-15 12:58:09 KST
+ØMQ 3.2.2<br />
+Last updated 2012-11-14 10:09:14 KST
 </div>
 </div>
 </body>

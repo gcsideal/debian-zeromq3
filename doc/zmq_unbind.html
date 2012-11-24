@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
 <meta name="generator" content="AsciiDoc 8.6.6" />
-<title>zmq_init(3)</title>
+<title>zmq_unbind(3)</title>
 <style type="text/css">
 /* Shared CSS for AsciiDoc xhtml11 and html5 backends */
 
@@ -736,12 +736,12 @@ asciidoc.install();
 <body class="manpage">
 <div id="header">
 <h1>
-zmq_init(3) Manual Page
+zmq_unbind(3) Manual Page
 </h1>
 <h2>NAME</h2>
 <div class="sectionbody">
-<p>zmq_init -
-   initialise 0MQ context
+<p>zmq_unbind -
+   Stop accepting connections on a socket
 </p>
 </div>
 </div>
@@ -749,28 +749,23 @@ zmq_init(3) Manual Page
 <div class="sect1">
 <h2 id="_synopsis">SYNOPSIS</h2>
 <div class="sectionbody">
-<div class="paragraph"><p><strong>void *zmq_init (int <em>io_threads</em>);</strong></p></div>
+<div class="paragraph"><p>int zmq_unbind (void <em>*socket</em>, const char <em>*endpoint</em>);</p></div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_description">DESCRIPTION</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>The <em>zmq_init()</em> function initialises a ØMQ <em>context</em>.</p></div>
-<div class="paragraph"><p>The <em>io_threads</em> argument specifies the size of the ØMQ thread pool to handle
-I/O operations. If your application is using only the <em>inproc</em> transport for
-messaging you may set this to zero, otherwise set it to at least one.</p></div>
-<div class="paragraph"><div class="title">Thread safety</div><p>A ØMQ <em>context</em> is thread safe and may be shared among as many application
-threads as necessary, without any additional locking required on the part of
-the caller.</p></div>
-<div class="paragraph"><p>This function is deprecated by <a href="zmq_ctx_new.html">zmq_ctx_new(3)</a>.</p></div>
+<div class="paragraph"><p>The <em>zmq_unbind()</em> function shall unbind a socket specified
+by the <em>socket</em> argument from the endpoint specified by the <em>endpoint</em>
+argument.</p></div>
+<div class="paragraph"><p>The <em>endpoint</em> argument is as described in <a href="zmq_bind.html">zmq_bind(3)</a></p></div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_return_value">RETURN VALUE</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>The <em>zmq_init()</em> function shall return an opaque handle to the initialised
-<em>context</em> if successful. Otherwise it shall return NULL and set <em>errno</em> to one
-of the values defined below.</p></div>
+<div class="paragraph"><p>The <em>zmq_unbind()</em> function shall return zero if successful. Otherwise it
+shall return <tt>-1</tt> and set <em>errno</em> to one of the values defined below.</p></div>
 </div>
 </div>
 <div class="sect1">
@@ -782,24 +777,59 @@ of the values defined below.</p></div>
 </dt>
 <dd>
 <p>
-An invalid number of <em>io_threads</em> was requested.
+The endpoint supplied is invalid.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>ETERM</strong>
+</dt>
+<dd>
+<p>
+The ØMQ <em>context</em> associated with the specified <em>socket</em> was terminated.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>ENOTSOCK</strong>
+</dt>
+<dd>
+<p>
+The provided <em>socket</em> was invalid.
 </p>
 </dd>
 </dl></div>
 </div>
 </div>
 <div class="sect1">
+<h2 id="_example">EXAMPLE</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">Unbind a subscriber socket from a TCP transport</div>
+<div class="content">
+<pre><tt>/* Create a ZMQ_SUB socket */
+void *socket = zmq_socket (context, ZMQ_SUB);
+assert (socket);
+/* Connect it to the host server001, port 5555 using a TCP transport */
+rc = zmq_bind (socket, "tcp://127.0.0.1:5555");
+assert (rc == 0);
+/* Disconnect from the previously connected endpoint */
+rc = zmq_unbind (socket, "tcp://127.0.0.1:5555");
+assert (rc == 0);</tt></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_see_also">SEE ALSO</h2>
 <div class="sectionbody">
-<div class="paragraph"><p><a href="zmq.html">zmq(7)</a>
-<a href="zmq_term.html">zmq_term(3)</a></p></div>
+<div class="paragraph"><p><a href="zmq_bind.html">zmq_bind(3)</a>
+<a href="zmq_socket.html">zmq_socket(3)</a>
+<a href="zmq.html">zmq(7)</a></p></div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_authors">AUTHORS</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>This ØMQ manual page was written by Martin Sustrik &lt;<a href="mailto:sustrik@250bpm.com">sustrik@250bpm.com</a>&gt; and
-Martin Lucina &lt;<a href="mailto:mato@kotelna.sk">mato@kotelna.sk</a>&gt;.</p></div>
+<div class="paragraph"><p>This ØMQ manual page was written by Martin Sustrik &lt;<a href="mailto:sustrik@250bpm.com">sustrik@250bpm.com</a>&gt;,
+Martin Lucina &lt;<a href="mailto:mato@kotelna.sk">mato@kotelna.sk</a>&gt; and Ian Barber &lt;<a href="mailto:ian.barber@gmail.com">ian.barber@gmail.com</a>&gt;</p></div>
 </div>
 </div>
 </div>
