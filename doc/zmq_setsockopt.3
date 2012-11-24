@@ -2,12 +2,12 @@
 .\"     Title: zmq_setsockopt
 .\"    Author: [see the "AUTHORS" section]
 .\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
-.\"      Date: 10/15/2012
+.\"      Date: 11/23/2012
 .\"    Manual: 0MQ Manual
-.\"    Source: 0MQ 3.2.1
+.\"    Source: 0MQ 3.2.2
 .\"  Language: English
 .\"
-.TH "ZMQ_SETSOCKOPT" "3" "10/15/2012" "0MQ 3\&.2\&.1" "0MQ Manual"
+.TH "ZMQ_SETSOCKOPT" "3" "11/23/2012" "0MQ 3\&.2\&.2" "0MQ Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -44,6 +44,22 @@ The following socket options can be set with the \fIzmq_setsockopt()\fR function
 The \fIZMQ_SNDHWM\fR option shall set the high water mark for outbound messages on the specified \fIsocket\fR\&. The high water mark is a hard limit on the maximum number of outstanding messages 0MQ shall queue in memory for any single peer that the specified \fIsocket\fR is communicating with\&.
 .sp
 If this limit has been reached the socket shall enter an exceptional state and depending on the socket type, 0MQ shall take appropriate action such as blocking or dropping sent messages\&. Refer to the individual socket descriptions in \fBzmq_socket\fR(3) for details on the exact action taken for each socket type\&.
+.if n \{\
+.sp
+.\}
+.RS 4
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.ps +1
+\fBNote\fR
+.ps -1
+.br
+.sp
+0MQ does not guarantee that the socket will accept as many as ZMQ_SNDHWM messages, and the actual limit may be as much as 60\-70% lower depending on the flow of messages on the socket\&.
+.sp .5v
+.RE
 .TS
 tab(:);
 lt lt
@@ -919,9 +935,7 @@ T}
 .sp 1
 .SS "ZMQ_ROUTER_MANDATORY: accept only routable messages on ROUTER sockets"
 .sp
-Sets the \fIROUTER\fR socket behavior when an unroutable message is encountered\&. A value of 0 is the default and discards the message silently when it cannot be routed\&. A value of 1 returns an \fIEAGAIN\fR error code if the message cannot be routed\&.
-.sp
-Note: Setting this socket option may have unpredictable effects on reactor\-type libraries that assume EAGAIN will only be sent in HWM\-type situations\&.
+Sets the \fIROUTER\fR socket behavior when an unroutable message is encountered\&. A value of 0 is the default and discards the message silently when it cannot be routed\&. A value of 1 returns an \fIEHOSTUNREACH\fR error code if the message cannot be routed\&.
 .TS
 tab(:);
 lt lt

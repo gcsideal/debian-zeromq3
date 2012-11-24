@@ -741,7 +741,7 @@ zmq_connect(3) Manual Page
 <h2>NAME</h2>
 <div class="sectionbody">
 <p>zmq_connect -
-   connect a socket
+   create outgoing connection from socket
 </p>
 </div>
 </div>
@@ -755,20 +755,19 @@ zmq_connect(3) Manual Page
 <div class="sect1">
 <h2 id="_description">DESCRIPTION</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>The <em>zmq_connect()</em> function shall connect the socket referenced by the
-<em>socket</em> argument to the endpoint specified by the <em>endpoint</em> argument.</p></div>
-<div class="paragraph"><p>The <em>endpoint</em> argument is a string consisting of two parts as follows:
-<em>transport</em><tt>://</tt><em>address</em>. The <em>transport</em> part specifies the underlying
-transport protocol to use. The meaning of the <em>address</em> part is specific to
-the underlying transport protocol selected.</p></div>
-<div class="paragraph"><p>The following transports are defined:</p></div>
+<div class="paragraph"><p>The <em>zmq_connect()</em> function connects the <em>socket</em> to an <em>endpoint</em> and then
+accepts incoming connections on that endpoint.</p></div>
+<div class="paragraph"><p>The <em>endpoint</em> is a string consisting of a <em>transport</em><tt>://</tt> followed by an
+<em>address</em>. The <em>transport</em> specifies the underlying protocol to use. The
+<em>address</em> specifies the transport-specific address to connect to.</p></div>
+<div class="paragraph"><p>ØMQ provides the the following transports:</p></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<em>inproc</em>
+<em>tcp</em>
 </dt>
 <dd>
 <p>
-local in-process (inter-thread) communication transport, see <a href="zmq_inproc.html">zmq_inproc(7)</a>
+unicast transport using TCP, see <a href="zmq_tcp.html">zmq_tcp(7)</a>
 </p>
 </dd>
 <dt class="hdlist1">
@@ -780,11 +779,11 @@ local inter-process communication transport, see <a href="zmq_ipc.html">zmq_ipc(
 </p>
 </dd>
 <dt class="hdlist1">
-<em>tcp</em>
+<em>inproc</em>
 </dt>
 <dd>
 <p>
-unicast transport using TCP, see <a href="zmq_tcp.html">zmq_tcp(7)</a>
+local in-process (inter-thread) communication transport, see <a href="zmq_inproc.html">zmq_inproc(7)</a>
 </p>
 </dd>
 <dt class="hdlist1">
@@ -796,25 +795,33 @@ reliable multicast transport using PGM, see <a href="zmq_pgm.html">zmq_pgm(7)</a
 </p>
 </dd>
 </dl></div>
-<div class="paragraph"><p>ZeroMQ sockets support one-to-many and many-to-one semantics. With the exception
-of <em>ZMQ_PAIR</em> sockets every ZeroMQ socket type supports being bound with
-<em>zmq_bind()</em> as a singular endpoint or connecting with <em>zmq_connect()</em> as one
-of many endpoints. This allows combinations such as 1 ZMQ_REP to 100 ZMQ_REP and
-100 ZMQ_REQ to 1 ZMQ_REP socket connections. Refer to <a href="zmq_socket.html">zmq_socket(3)</a> for
-a description of the exact semantics involved when connecting or binding a socket
-to multiple endpoints.</p></div>
+<div class="paragraph"><p>Every ØMQ socket type except <em>ZMQ_PAIR</em> supports one-to-many and many-to-one
+semantics. The precise semantics depend on the socket type and are defined in
+<a href="zmq_socket.html">zmq_socket(3)</a>.</p></div>
 <div class="admonitionblock">
 <table><tr>
 <td class="icon">
 <div class="title">Note</div>
 </td>
-<td class="content">The connection will not be performed immediately but as needed by ØMQ.
-Thus a successful invocation of <em>zmq_connect()</em> does not indicate that a
-physical connection was or can actually be established. Because of this, for most
-socket types the order in which a listening socket is bound and a connecting socket
-is connected does not matter. However, for inproc:// scheme sockets, the zmq_bind()
-must be executed before any sockets zmq_connect() to that endpoint. Refer to
-<a href="zmq_inproc.html">zmq_inproc(7)</a> for more details.</td>
+<td class="content">for most transports and socket types the connection is not performed
+immediately but as needed by ØMQ. Thus a successful call to <em>zmq_connect()</em>
+does not mean that the connection was or could actually be established.
+Because of this, for most transports and socket types the order in which
+a <em>server</em> socket is bound and a <em>client</em> socket is connected to it does not
+matter. The first exception is when using the inproc:// transport: you must
+call <em>zmq_bind()</em> before calling <em>zmq_connect()</em>. The second exception are
+<em>ZMQ_PAIR</em> sockets, which do not automatically reconnect to endpoints.</td>
+</tr></table>
+</div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">following a <em>zmq_connect()</em>, the socket enters its normal <em>ready</em> state.
+By contrast, following a <em>zmq_bind()</em> alone, the socket enters a <em>mute</em> state
+in which the socket blocks or drops messages according to the socket type, as
+defined in <a href="zmq_socket.html">zmq_socket(3)</a>.</td>
 </tr></table>
 </div>
 </div>
@@ -822,8 +829,8 @@ must be executed before any sockets zmq_connect() to that endpoint. Refer to
 <div class="sect1">
 <h2 id="_return_value">RETURN VALUE</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>The <em>zmq_connect()</em> function shall return zero if successful. Otherwise it
-shall return <tt>-1</tt> and set <em>errno</em> to one of the values defined below.</p></div>
+<div class="paragraph"><p>The <em>zmq_connect()</em> function returns zero if successful. Otherwise it returns
+<tt>-1</tt> and sets <em>errno</em> to one of the values defined below.</p></div>
 </div>
 </div>
 <div class="sect1">
@@ -910,16 +917,16 @@ assert (rc == 0);</tt></pre>
 <div class="sect1">
 <h2 id="_authors">AUTHORS</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>This ØMQ manual page was written by Martin Sustrik &lt;<a href="mailto:sustrik@250bpm.com">sustrik@250bpm.com</a>&gt; and
-Martin Lucina &lt;<a href="mailto:mato@kotelna.sk">mato@kotelna.sk</a>&gt;.</p></div>
+<div class="paragraph"><p>This ØMQ manual page was written by Pieter Hintjens &lt;<a href="mailto:ph@imatix.com">ph@imatix.com</a>&gt;,
+Martin Sustrik &lt;<a href="mailto:sustrik@250bpm.com">sustrik@250bpm.com</a>&gt; and Martin Lucina &lt;<a href="mailto:mato@kotelna.sk">mato@kotelna.sk</a>&gt;.</p></div>
 </div>
 </div>
 </div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-ØMQ 3.2.1<br />
-Last updated 2012-10-15 12:58:09 KST
+ØMQ 3.2.2<br />
+Last updated 2012-11-14 10:09:14 KST
 </div>
 </div>
 </body>

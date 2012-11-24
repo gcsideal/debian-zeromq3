@@ -774,6 +774,16 @@ depending on the socket type, ØMQ shall take appropriate action such as
 blocking or dropping sent messages. Refer to the individual socket descriptions
 in <a href="zmq_socket.html">zmq_socket(3)</a> for details on the exact action taken for each socket
 type.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">ØMQ does not guarantee that the socket will accept as many as ZMQ_SNDHWM
+messages, and the actual limit may be as much as 60-70% lower depending on the
+flow of messages on the socket.</td>
+</tr></table>
+</div>
 <div class="hdlist"><table>
 <tr>
 <td class="hdlist1">
@@ -1904,10 +1914,8 @@ all, only for connection-oriented transports.
 <h3 id="_zmq_router_mandatory_accept_only_routable_messages_on_router_sockets">ZMQ_ROUTER_MANDATORY: accept only routable messages on ROUTER sockets</h3>
 <div class="paragraph"><p>Sets the <em>ROUTER</em> socket behavior when an unroutable message is encountered. A
 value of <tt>0</tt> is the default and discards the message silently when it cannot be
-routed.  A value of <tt>1</tt> returns an <em>EAGAIN</em> error code if the message cannot be
-routed.</p></div>
-<div class="paragraph"><p>Note: Setting this socket option may have unpredictable effects on reactor-type
-libraries that assume EAGAIN will only be sent in HWM-type situations.</p></div>
+routed.  A value of <tt>1</tt> returns an <em>EHOSTUNREACH</em> error code if the message
+cannot be routed.</p></div>
 <div class="hdlist"><table>
 <tr>
 <td class="hdlist1">
@@ -2365,8 +2373,8 @@ Martin Lucina &lt;<a href="mailto:mato@kotelna.sk">mato@kotelna.sk</a>&gt;.</p><
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-ØMQ 3.2.1<br />
-Last updated 2012-10-15 12:58:09 KST
+ØMQ 3.2.2<br />
+Last updated 2012-11-23 16:54:28 KST
 </div>
 </div>
 </body>

@@ -765,19 +765,32 @@ systems that provide UNIX domain sockets.</td>
 <div class="sect1">
 <h2 id="_addressing">ADDRESSING</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>A ØMQ address string consists of two parts as follows:
-<em>transport</em><tt>://</tt><em>endpoint</em>. The <em>transport</em> part specifies the underlying
-transport protocol to use, and for the inter-process transport shall be set to
-<tt>ipc</tt>.  The meaning of the <em>endpoint</em> part for the inter-process transport is
-defined below.</p></div>
+<div class="paragraph"><p>A ØMQ endpoint is a string consisting of a <em>transport</em><tt>://</tt> followed by an
+<em>address</em>. The <em>transport</em> specifies the underlying protocol to use. The
+<em>address</em> specifies the transport-specific address to connect to.</p></div>
+<div class="paragraph"><p>For the inter-process transport, the transport is <tt>ipc</tt>, and the meaning of
+the <em>address</em> part is defined below.</p></div>
 <div class="sect2">
-<h3 id="_assigning_a_local_address_to_a_socket">Assigning a local address to a socket</h3>
-<div class="paragraph"><p>When assigning a local address to a <em>socket</em> using <em>zmq_bind()</em> with the <em>ipc</em>
+<h3 id="_binding_a_socket">Binding a socket</h3>
+<div class="paragraph"><p>When binding a <em>socket</em> to a local address using <em>zmq_bind()</em> with the <em>ipc</em>
 transport, the <em>endpoint</em> shall be interpreted as an arbitrary string
 identifying the <em>pathname</em> to create. The <em>pathname</em> must be unique within the
 operating system namespace used by the <em>ipc</em> implementation, and must fulfill
 any restrictions placed by the operating system on the format and length of a
 <em>pathname</em>.</p></div>
+<div class="paragraph"><p>When the address is <tt>*</tt>, <em>zmq_bind()</em> shall generate a unique temporary
+pathname. The caller should retrieve this pathname using the ZMQ_LAST_ENDPOINT
+socket option. See <a href="zmq_getsockopt.html">zmq_getsockopt(3)</a> for details.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">any existing binding to the same endpoint shall be overridden. In this
+behavior, the <em>ipc</em> transport is not consistent with the <em>tcp</em> or <em>inproc</em>
+transports.</td>
+</tr></table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_connecting_a_socket">Connecting a socket</h3>
@@ -790,25 +803,19 @@ previously created within the operating system namespace by assigning it to a
 </div>
 </div>
 <div class="sect1">
-<h2 id="_wire_format">WIRE FORMAT</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Not applicable.</p></div>
-</div>
-</div>
-<div class="sect1">
 <h2 id="_examples">EXAMPLES</h2>
 <div class="sectionbody">
 <div class="listingblock">
 <div class="title">Assigning a local address to a socket</div>
 <div class="content">
-<pre><tt>/* Assign the pathname "/tmp/feeds/0" */
+<pre><tt>//  Assign the pathname "/tmp/feeds/0"
 rc = zmq_bind(socket, "ipc:///tmp/feeds/0");
 assert (rc == 0);</tt></pre>
 </div></div>
 <div class="listingblock">
 <div class="title">Connecting a socket</div>
 <div class="content">
-<pre><tt>/* Connect to the pathname "/tmp/feeds/0" */
+<pre><tt>//  Connect to the pathname "/tmp/feeds/0"
 rc = zmq_connect(socket, "ipc:///tmp/feeds/0");
 assert (rc == 0);</tt></pre>
 </div></div>
@@ -822,22 +829,23 @@ assert (rc == 0);</tt></pre>
 <a href="zmq_inproc.html">zmq_inproc(7)</a>
 <a href="zmq_tcp.html">zmq_tcp(7)</a>
 <a href="zmq_pgm.html">zmq_pgm(7)</a>
+<a href="zmq_getsockopt.html">zmq_getsockopt(3)</a>
 <a href="zmq.html">zmq(7)</a></p></div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_authors">AUTHORS</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>This ØMQ manual page was written by Martin Sustrik &lt;<a href="mailto:sustrik@250bpm.com">sustrik@250bpm.com</a>&gt; and
-Martin Lucina &lt;<a href="mailto:mato@kotelna.sk">mato@kotelna.sk</a>&gt;.</p></div>
+<div class="paragraph"><p>This ØMQ manual page was written by Pieter Hintjens &lt;<a href="mailto:ph@imatix.com">ph@imatix.com</a>&gt;,
+Martin Sustrik &lt;<a href="mailto:sustrik@250bpm.com">sustrik@250bpm.com</a>&gt; and Martin Lucina &lt;<a href="mailto:mato@kotelna.sk">mato@kotelna.sk</a>&gt;.</p></div>
 </div>
 </div>
 </div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-ØMQ 3.2.1<br />
-Last updated 2012-10-15 12:58:09 KST
+ØMQ 3.2.2<br />
+Last updated 2012-11-14 10:09:14 KST
 </div>
 </div>
 </body>

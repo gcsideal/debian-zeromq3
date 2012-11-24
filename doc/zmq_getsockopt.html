@@ -1832,23 +1832,62 @@ all, when using TCP transports.
 </td>
 </tr>
 </table></div>
-<div class="paragraph"><p>ZMQ_DELAY_ATTACH_ON_CONNECT</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><tt>Retrieve the state of the attach on connect value. If set to `1`, will delay the
+</div>
+<div class="sect2">
+<h3 id="_zmq_delay_attach_on_connect_retrieve_attach_on_connect_value">ZMQ_DELAY_ATTACH_ON_CONNECT: Retrieve attach-on-connect value</h3>
+<div class="paragraph"><p>Retrieve the state of the attach on connect value. If set to <tt>1</tt>, will delay the
 attachment of a pipe on connect until the underlying connection has completed.
 This will cause the socket to block if there are no other connections, but will
-prevent queues from filling on pipes awaiting connection.
-
-[horizontal]
-Option value type:: int
-Option value unit:: boolean
-Default value:: 0 (false)
-Applicable socket types:: all, primarily when using TCP/IPC transports.
-
-
-ZMQ_FD: Retrieve file descriptor associated with the socket</tt></pre>
-</div></div>
+prevent queues from filling on pipes awaiting connection.</p></div>
+<div class="hdlist"><table>
+<tr>
+<td class="hdlist1">
+Option value type
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+int
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Option value unit
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+boolean
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Default value
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+0 (false)
+</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Applicable socket types
+<br />
+</td>
+<td class="hdlist2">
+<p style="margin-top: 0;">
+all, primarily when using TCP/IPC transports.
+</p>
+</td>
+</tr>
+</table></div>
+</div>
+<div class="sect2">
+<h3 id="_zmq_fd_retrieve_file_descriptor_associated_with_the_socket">ZMQ_FD: Retrieve file descriptor associated with the socket</h3>
 <div class="paragraph"><p>The <em>ZMQ_FD</em> option shall retrieve the file descriptor associated with the
 specified <em>socket</em>. The returned file descriptor can be used to integrate the
 socket into an existing event loop; the ØMQ library shall signal any pending
@@ -2352,8 +2391,8 @@ Martin Lucina &lt;<a href="mailto:mato@kotelna.sk">mato@kotelna.sk</a>&gt;.</p><
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-ØMQ 3.2.1<br />
-Last updated 2012-10-15 12:58:09 KST
+ØMQ 3.2.2<br />
+Last updated 2012-11-14 10:09:14 KST
 </div>
 </div>
 </body>
