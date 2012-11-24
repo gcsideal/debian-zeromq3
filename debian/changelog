@@ -1,3 +1,9 @@
+zeromq3 (3.2.2+dfsg-1) UNRELEASED; urgency=low
+
+  * New upstream release (Closes: #694087)
+
+ -- Alessandro Ghedini <ghedo@debian.org>  Sat, 24 Nov 2012 17:02:11 +0100
+
 zeromq3 (3.2.1~rc2+dfsg-1) experimental; urgency=low
 
   * New upstream RC release (Closes: #690704)
