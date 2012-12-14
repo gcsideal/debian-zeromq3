@@ -24,7 +24,7 @@ Description: lightweight messaging kernel (shared library)
  messaging patterns, message filtering (subscriptions), seamless access to
  multiple transport protocols and more.
  .
- This package contains the ZeroMQ shared library.
+ This package contains the libzmq shared library.
 
 Package: libzmq3-dev
 Architecture: any
