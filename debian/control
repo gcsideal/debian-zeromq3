@@ -56,4 +56,4 @@ Description: lightweight messaging kernel (debugging symbols)
  messaging patterns, message filtering (subscriptions), seamless access to
  multiple transport protocols and more.
  .
- This package contains the debugging synmbols for the ZeroMQ library.
+ This package contains the debugging symbols for the ZeroMQ library.
