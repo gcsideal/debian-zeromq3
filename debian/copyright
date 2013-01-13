@@ -58,6 +58,7 @@ Copyright: 2009-2011, 250bpm s.r.o.
  2011, Botond Ballo
  2007-2009, iMatix Corporation
 License: MIT
+Comment: The C++ header was downloaded from https://github.com/zeromq/cppzmq
 
 License: LGPL-2.0+
  This package is free software; you can redistribute it and/or
