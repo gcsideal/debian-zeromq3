@@ -41,7 +41,8 @@ noinst_PROGRAMS = test_pair_inproc$(EXEEXT) test_pair_tcp$(EXEEXT) \
 	test_msg_flags$(EXEEXT) test_connect_resolve$(EXEEXT) \
 	test_connect_delay$(EXEEXT) test_last_endpoint$(EXEEXT) \
 	test_term_endpoint$(EXEEXT) test_monitor$(EXEEXT) \
-	test_router_mandatory$(EXEEXT) $(am__EXEEXT_1)
+	test_router_mandatory$(EXEEXT) test_disconnect_inproc$(EXEEXT) \
+	$(am__EXEEXT_1)
 @ON_MINGW_FALSE@am__append_1 = test_shutdown_stress \
 @ON_MINGW_FALSE@                   test_pair_ipc \
 @ON_MINGW_FALSE@                   test_reqrep_ipc \
@@ -77,6 +78,10 @@ am_test_connect_resolve_OBJECTS = test_connect_resolve.$(OBJEXT)
 test_connect_resolve_OBJECTS = $(am_test_connect_resolve_OBJECTS)
 test_connect_resolve_LDADD = $(LDADD)
 test_connect_resolve_DEPENDENCIES = $(top_builddir)/src/libzmq.la
+am_test_disconnect_inproc_OBJECTS = test_disconnect_inproc.$(OBJEXT)
+test_disconnect_inproc_OBJECTS = $(am_test_disconnect_inproc_OBJECTS)
+test_disconnect_inproc_LDADD = $(LDADD)
+test_disconnect_inproc_DEPENDENCIES = $(top_builddir)/src/libzmq.la
 am_test_hwm_OBJECTS = test_hwm.$(OBJEXT)
 test_hwm_OBJECTS = $(am_test_hwm_OBJECTS)
 test_hwm_LDADD = $(LDADD)
@@ -194,7 +199,8 @@ AM_V_GEN = $(am__v_GEN_@AM_V@)
 am__v_GEN_ = $(am__v_GEN_@AM_DEFAULT_V@)
 am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(test_connect_delay_SOURCES) \
-	$(test_connect_resolve_SOURCES) $(test_hwm_SOURCES) \
+	$(test_connect_resolve_SOURCES) \
+	$(test_disconnect_inproc_SOURCES) $(test_hwm_SOURCES) \
 	$(test_invalid_rep_SOURCES) $(test_last_endpoint_SOURCES) \
 	$(test_monitor_SOURCES) $(test_msg_flags_SOURCES) \
 	$(test_pair_inproc_SOURCES) $(test_pair_ipc_SOURCES) \
@@ -204,7 +210,8 @@ SOURCES = $(test_connect_delay_SOURCES) \
 	$(test_shutdown_stress_SOURCES) $(test_sub_forward_SOURCES) \
 	$(test_term_endpoint_SOURCES) $(test_timeo_SOURCES)
 DIST_SOURCES = $(test_connect_delay_SOURCES) \
-	$(test_connect_resolve_SOURCES) $(test_hwm_SOURCES) \
+	$(test_connect_resolve_SOURCES) \
+	$(test_disconnect_inproc_SOURCES) $(test_hwm_SOURCES) \
 	$(test_invalid_rep_SOURCES) $(test_last_endpoint_SOURCES) \
 	$(test_monitor_SOURCES) $(test_msg_flags_SOURCES) \
 	$(test_pair_inproc_SOURCES) $(am__test_pair_ipc_SOURCES_DIST) \
@@ -375,6 +382,7 @@ test_connect_delay_SOURCES = test_connect_delay.cpp
 test_last_endpoint_SOURCES = test_last_endpoint.cpp
 test_term_endpoint_SOURCES = test_term_endpoint.cpp
 test_monitor_SOURCES = test_monitor.cpp
+test_disconnect_inproc_SOURCES = test_disconnect_inproc.cpp
 test_router_mandatory_SOURCES = test_router_mandatory.cpp
 @ON_MINGW_FALSE@test_shutdown_stress_SOURCES = test_shutdown_stress.cpp
 @ON_MINGW_FALSE@test_pair_ipc_SOURCES = test_pair_ipc.cpp testutil.hpp
@@ -430,6 +438,9 @@ test_connect_delay$(EXEEXT): $(test_connect_delay_OBJECTS) $(test_connect_delay_
 test_connect_resolve$(EXEEXT): $(test_connect_resolve_OBJECTS) $(test_connect_resolve_DEPENDENCIES) $(EXTRA_test_connect_resolve_DEPENDENCIES) 
 	@rm -f test_connect_resolve$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(test_connect_resolve_OBJECTS) $(test_connect_resolve_LDADD) $(LIBS)
+test_disconnect_inproc$(EXEEXT): $(test_disconnect_inproc_OBJECTS) $(test_disconnect_inproc_DEPENDENCIES) $(EXTRA_test_disconnect_inproc_DEPENDENCIES) 
+	@rm -f test_disconnect_inproc$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(test_disconnect_inproc_OBJECTS) $(test_disconnect_inproc_LDADD) $(LIBS)
 test_hwm$(EXEEXT): $(test_hwm_OBJECTS) $(test_hwm_DEPENDENCIES) $(EXTRA_test_hwm_DEPENDENCIES) 
 	@rm -f test_hwm$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(test_hwm_OBJECTS) $(test_hwm_LDADD) $(LIBS)
@@ -490,6 +501,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_connect_delay.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_connect_resolve.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_disconnect_inproc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_hwm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_invalid_rep.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_last_endpoint.Po@am__quote@
