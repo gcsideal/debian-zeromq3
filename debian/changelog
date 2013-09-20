@@ -1,8 +1,9 @@
-zeromq3 (3.2.4+dfsg-1) UNRELEASED; urgency=low
+zeromq3 (3.2.4+dfsg-1) unstable; urgency=low
 
   * New upstream release
+  * Update the zmq.hpp C++ header
 
- -- Alessandro Ghedini <ghedo@debian.org>  Fri, 20 Sep 2013 13:44:50 +0200
+ -- Alessandro Ghedini <ghedo@debian.org>  Fri, 20 Sep 2013 13:56:16 +0200
 
 zeromq3 (3.2.3+dfsg-2) unstable; urgency=low
 
