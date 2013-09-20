@@ -1,3 +1,9 @@
+zeromq3 (3.2.4+dfsg-1) UNRELEASED; urgency=low
+
+  * New upstream release
+
+ -- Alessandro Ghedini <ghedo@debian.org>  Fri, 20 Sep 2013 13:44:50 +0200
+
 zeromq3 (3.2.3+dfsg-2) unstable; urgency=low
 
   * Make test failures non-fatal on kfreebsd and s390/s390x
