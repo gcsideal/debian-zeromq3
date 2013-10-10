@@ -1,0 +1,54 @@
+libzmq.so.3 libzmq3 #MINVER#
+ (c++)"std::basic_string<unsigned char, std::char_traits<unsigned char>, std::allocator<unsigned char> >::_M_leak_hard()@Base" 3.2.3+dfsg
+ (c++)"unsigned char* std::basic_string<unsigned char, std::char_traits<unsigned char>, std::allocator<unsigned char> >::_S_construct<unsigned char const*>(unsigned char const*, unsigned char const*, std::allocator<unsigned char> const&, std::forward_iterator_tag)@Base" 3.2.3+dfsg
+ (c++)"std::basic_string<unsigned char, std::char_traits<unsigned char>, std::allocator<unsigned char> >::_Rep::_S_empty_rep_storage@Base" 3.2.3+dfsg
+ (c++)"std::basic_string<unsigned char, std::char_traits<unsigned char>, std::allocator<unsigned char> >::assign(std::basic_string<unsigned char, std::char_traits<unsigned char>, std::allocator<unsigned char> > const&)@Base" 3.2.3+dfsg
+ (c++)"char* std::basic_string<char, std::char_traits<char>, std::allocator<char> >::_S_construct<char*>(char*, char*, std::allocator<char> const&, std::forward_iterator_tag)@Base" 3.2.3+dfsg
+ (c++)"std::basic_stringbuf<char, std::char_traits<char>, std::allocator<char> >::~basic_stringbuf()@Base" 3.2.3+dfsg
+ (c++)"std::basic_stringbuf<char, std::char_traits<char>, std::allocator<char> >::~basic_stringbuf()@Base" 3.2.3+dfsg
+ (c++)"std::basic_stringbuf<char, std::char_traits<char>, std::allocator<char> >::~basic_stringbuf()@Base" 3.2.3+dfsg
+ (c++)"std::deque<std::basic_string<unsigned char, std::char_traits<unsigned char>, std::allocator<unsigned char> >, std::allocator<std::basic_string<unsigned char, std::char_traits<unsigned char>, std::allocator<unsigned char> > > >::_M_push_back_aux(std::basic_string<unsigned char, std::char_traits<unsigned char>, std::allocator<unsigned char> > const&)@Base" 3.2.3+dfsg
+ (c++)"std::vector<unsigned int, std::allocator<unsigned int> >::_M_insert_aux(__gnu_cxx::__normal_iterator<unsigned int*, std::vector<unsigned int, std::allocator<unsigned int> > >, unsigned int const&)@Base" 3.2.3+dfsg
+ zmq_bind@Base 3.2.3+dfsg
+ zmq_close@Base 3.2.3+dfsg
+ zmq_connect@Base 3.2.3+dfsg
+ zmq_ctx_destroy@Base 3.2.3+dfsg
+ zmq_ctx_get@Base 3.2.3+dfsg
+ zmq_ctx_new@Base 3.2.3+dfsg
+ zmq_ctx_set@Base 3.2.3+dfsg
+ zmq_device@Base 3.2.3+dfsg
+ zmq_disconnect@Base 3.2.3+dfsg
+ zmq_errno@Base 3.2.3+dfsg
+ zmq_getsockopt@Base 3.2.3+dfsg
+ zmq_init@Base 3.2.3+dfsg
+ zmq_msg_close@Base 3.2.3+dfsg
+ zmq_msg_copy@Base 3.2.3+dfsg
+ zmq_msg_data@Base 3.2.3+dfsg
+ zmq_msg_get@Base 3.2.3+dfsg
+ zmq_msg_init@Base 3.2.3+dfsg
+ zmq_msg_init_data@Base 3.2.3+dfsg
+ zmq_msg_init_size@Base 3.2.3+dfsg
+ zmq_msg_more@Base 3.2.3+dfsg
+ zmq_msg_move@Base 3.2.3+dfsg
+ zmq_msg_recv@Base 3.2.3+dfsg
+ zmq_msg_send@Base 3.2.3+dfsg
+ zmq_msg_set@Base 3.2.3+dfsg
+ zmq_msg_size@Base 3.2.3+dfsg
+ zmq_poll@Base 3.2.3+dfsg
+ zmq_proxy@Base 3.2.3+dfsg
+ zmq_recv@Base 3.2.3+dfsg
+ zmq_recviov@Base 3.2.3+dfsg
+ zmq_recvmsg@Base 3.2.3+dfsg
+ zmq_send@Base 3.2.3+dfsg
+ zmq_sendiov@Base 3.2.3+dfsg
+ zmq_sendmsg@Base 3.2.3+dfsg
+ zmq_setsockopt@Base 3.2.3+dfsg
+ zmq_sleep@Base 3.2.3+dfsg
+ zmq_socket@Base 3.2.3+dfsg
+ zmq_socket_monitor@Base 3.2.3+dfsg
+ zmq_stopwatch_start@Base 3.2.3+dfsg
+ zmq_stopwatch_stop@Base 3.2.3+dfsg
+ zmq_strerror@Base 3.2.3+dfsg
+ zmq_term@Base 3.2.3+dfsg
+ zmq_unbind@Base 3.2.3+dfsg
+ zmq_version@Base 3.2.3+dfsg
