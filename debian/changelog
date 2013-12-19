@@ -1,3 +1,12 @@
+zeromq3 (3.2.4+dfsg-2) unstable; urgency=medium
+
+  * Fix vcs-field-not-canonical
+  * Add symbols file
+  * Add 01_shutdown-race.patch to fix a race condition on shutdown
+    (Closes: #732576)
+
+ -- Alessandro Ghedini <ghedo@debian.org>  Thu, 19 Dec 2013 13:42:12 +0100
+
 zeromq3 (3.2.4+dfsg-1) unstable; urgency=low
 
   * New upstream release
