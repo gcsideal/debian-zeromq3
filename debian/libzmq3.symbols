@@ -1,14 +1,4 @@
 libzmq.so.3 libzmq3 #MINVER#
- (c++)"std::basic_string<unsigned char, std::char_traits<unsigned char>, std::allocator<unsigned char> >::_M_leak_hard()@Base" 3.2.3+dfsg
- (c++)"unsigned char* std::basic_string<unsigned char, std::char_traits<unsigned char>, std::allocator<unsigned char> >::_S_construct<unsigned char const*>(unsigned char const*, unsigned char const*, std::allocator<unsigned char> const&, std::forward_iterator_tag)@Base" 3.2.3+dfsg
- (c++)"std::basic_string<unsigned char, std::char_traits<unsigned char>, std::allocator<unsigned char> >::_Rep::_S_empty_rep_storage@Base" 3.2.3+dfsg
- (c++)"std::basic_string<unsigned char, std::char_traits<unsigned char>, std::allocator<unsigned char> >::assign(std::basic_string<unsigned char, std::char_traits<unsigned char>, std::allocator<unsigned char> > const&)@Base" 3.2.3+dfsg
- (c++)"char* std::basic_string<char, std::char_traits<char>, std::allocator<char> >::_S_construct<char*>(char*, char*, std::allocator<char> const&, std::forward_iterator_tag)@Base" 3.2.3+dfsg
- (c++)"std::basic_stringbuf<char, std::char_traits<char>, std::allocator<char> >::~basic_stringbuf()@Base" 3.2.3+dfsg
- (c++)"std::basic_stringbuf<char, std::char_traits<char>, std::allocator<char> >::~basic_stringbuf()@Base" 3.2.3+dfsg
- (c++)"std::basic_stringbuf<char, std::char_traits<char>, std::allocator<char> >::~basic_stringbuf()@Base" 3.2.3+dfsg
- (c++)"std::deque<std::basic_string<unsigned char, std::char_traits<unsigned char>, std::allocator<unsigned char> >, std::allocator<std::basic_string<unsigned char, std::char_traits<unsigned char>, std::allocator<unsigned char> > > >::_M_push_back_aux(std::basic_string<unsigned char, std::char_traits<unsigned char>, std::allocator<unsigned char> > const&)@Base" 3.2.3+dfsg
- (c++)"std::vector<unsigned int, std::allocator<unsigned int> >::_M_insert_aux(__gnu_cxx::__normal_iterator<unsigned int*, std::vector<unsigned int, std::allocator<unsigned int> > >, unsigned int const&)@Base" 3.2.3+dfsg
  zmq_bind@Base 3.2.3+dfsg
  zmq_close@Base 3.2.3+dfsg
  zmq_connect@Base 3.2.3+dfsg
