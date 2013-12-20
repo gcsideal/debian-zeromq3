@@ -13,7 +13,7 @@ ifeq ($(DEB_BUILD_ARCH_CPU), s390x)
 endif
 
 %:
-	dh $@ --with=autotools-dev
+	dh $@ --with=autoreconf
 
 override_dh_auto_configure:
 	dh_auto_configure -- --with-system-pgm
