@@ -4,14 +4,6 @@ ifeq ($(DEB_BUILD_ARCH_OS), kfreebsd)
 	DO_TEST = no
 endif
 
-ifeq ($(DEB_BUILD_ARCH_CPU), s390)
-	DO_TEST = no
-endif
-
-ifeq ($(DEB_BUILD_ARCH_CPU), s390x)
-	DO_TEST = no
-endif
-
 %:
 	dh $@ --with=autoreconf
 
