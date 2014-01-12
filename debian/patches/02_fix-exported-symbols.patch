@@ -1,7 +1,7 @@
 Description: Only export zmq_* symbols
 Origin: vendor
 Bug-Debian: http://bugs.debian.org/732654
-Forwarded: no
+Forwarded: https://github.com/zeromq/libzmq/pull/817
 Author: Alessandro Ghedini <ghedo@debian.org>
 Last-Update: 2013-12-20
 
