@@ -1,7 +1,5 @@
 /*
-    Copyright (c) 2010-2011 250bpm s.r.o.
-    Copyright (c) 2007-2009 iMatix Corporation
-    Copyright (c) 2007-2011 Other contributors as noted in the AUTHORS file
+    Copyright (c) 2007-2013 Contributors as noted in the AUTHORS file
 
     This file is part of 0MQ.
 
@@ -58,6 +56,28 @@ void zmq::tune_tcp_socket (fd_t s_)
     rc = setsockopt (s_, IPPROTO_TCP, TCP_NODELACK, (char*) &nodelack,
         sizeof (int));
     errno_assert (rc != SOCKET_ERROR);
+#endif
+}
+
+void zmq::set_tcp_send_buffer (fd_t sockfd_, int bufsize_)
+{
+    const int rc = setsockopt (sockfd_, SOL_SOCKET, SO_SNDBUF,
+        (char*) &bufsize_, sizeof bufsize_);
+#ifdef ZMQ_HAVE_WINDOWS
+    wsa_assert (rc != SOCKET_ERROR);
+#else
+    errno_assert (rc == 0);
+#endif
+}
+
+void zmq::set_tcp_receive_buffer (fd_t sockfd_, int bufsize_)
+{
+    const int rc = setsockopt (sockfd_, SOL_SOCKET, SO_RCVBUF,
+        (char*) &bufsize_, sizeof bufsize_);
+#ifdef ZMQ_HAVE_WINDOWS
+    wsa_assert (rc != SOCKET_ERROR);
+#else
+    errno_assert (rc == 0);
 #endif
 }
 
