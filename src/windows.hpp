@@ -1,7 +1,5 @@
 /*
-    Copyright (c) 2010-2011 250bpm s.r.o.
-    Copyright (c) 2007-2009 iMatix Corporation
-    Copyright (c) 2007-2011 Other contributors as noted in the AUTHORS file
+    Copyright (c) 2007-2013 Contributors as noted in the AUTHORS file
 
     This file is part of 0MQ.
 
@@ -170,7 +168,7 @@
 
 #include <ws2tcpip.h>
 #include <ipexport.h>
-#if !defined WINCE
+#if !defined _WIN32_WCE
 #include <process.h>
 #endif
 
