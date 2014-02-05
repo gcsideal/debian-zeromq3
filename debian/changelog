@@ -1,8 +1,12 @@
-zeromq3 (4.0.3+dfsg-1) UNRELEASED; urgency=medium
+zeromq3 (4.0.3+dfsg-1) experimental; urgency=medium
 
   * New upstream release (Closes: #736353)
+  * Drop 01_shutdown-race.patch (merged upstream)
+  * Update *.symbols file
+  * Don't install README anymore
+  * Update copyright file
 
- -- Alessandro Ghedini <ghedo@debian.org>  Wed, 05 Feb 2014 21:30:41 +0100
+ -- Alessandro Ghedini <ghedo@debian.org>  Wed, 05 Feb 2014 22:06:16 +0100
 
 zeromq3 (3.2.4+dfsg-4) unstable; urgency=medium
 
