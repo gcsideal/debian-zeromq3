@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: zmq_setsockopt
 .\"    Author: [see the "AUTHORS" section]
-.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
-.\"      Date: 11/24/2013
+.\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
+.\"      Date: 03/10/2014
 .\"    Manual: 0MQ Manual
-.\"    Source: 0MQ 4.0.3
+.\"    Source: 0MQ 4.0.4
 .\"  Language: English
 .\"
-.TH "ZMQ_SETSOCKOPT" "3" "11/24/2013" "0MQ 4\&.0\&.3" "0MQ Manual"
+.TH "ZMQ_SETSOCKOPT" "3" "03/10/2014" "0MQ 4\&.0\&.4" "0MQ Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -264,11 +264,9 @@ T}
 .sp 1
 .SS "ZMQ_IDENTITY: Set socket identity"
 .sp
-The \fIZMQ_IDENTITY\fR option shall set the identity of the specified \fIsocket\fR\&. Socket identity is used only by request/reply pattern\&. Namely, it can be used in tandem with ROUTER socket to route messages to the peer with specific identity\&.
+The \fIZMQ_IDENTITY\fR option shall set the identity of the specified \fIsocket\fR when connecting to a ROUTER socket\&. The identity should be from 1 to 255 bytes long and MAY NOT start with binary zero\&.
 .sp
-Identity should be at least one byte and at most 255 bytes long\&. Identities starting with binary zero are reserved for use by 0MQ infrastructure\&.
-.sp
-If two peers use the same identity when connecting to a third peer, the results shall be undefined\&.
+If two clients use the same identity when connecting to a ROUTER, the ROUTER socket shall accept only the first such client and reject the others\&.
 .TS
 tab(:);
 lt lt
