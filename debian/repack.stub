@@ -72,7 +72,9 @@ under the same terms as Perl itself.
 =cut
 
 if [ -z "$REPACK_SH" ]; then
-    if [ -f ../../scripts/repack.sh ]; then
+    if [ -x /usr/share/pkg-perl-tools/repack.sh ]; then
+        REPACK_SH='/usr/share/pkg-perl-tools/repack.sh'
+    elif [ -f ../../scripts/repack.sh ]; then
         REPACK_SH=../../scripts/repack.sh
     fi
     if [ -z "$REPACK_SH" ] && which repack.sh > /dev/null; then
@@ -82,7 +84,7 @@ fi
 
 if [ ! -f "$REPACK_SH" ]; then
     echo "Couldn't find a repack.sh. please put it in your PATH, put it at ../../scripts/repack.sh, or put it somewhere else and set the REPACK_SH variable"
-    echo "You can get it from http://anonscm.debian.org/gitweb/?p=pkg-perl/scripts.git;a=blob_plain;f=repack.sh;hb=HEAD"
+    echo "You can get it from http://anonscm.debian.org/gitweb/?p=pkg-perl/packages/pkg-perl-tools.git;a=blob_plain;f=scripts/repack.sh;hb=HEAD"
     exit 1
 fi
 
