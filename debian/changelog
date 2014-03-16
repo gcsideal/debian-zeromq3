@@ -1,8 +1,13 @@
-zeromq3 (4.0.4+dfsg-1) UNRELEASED; urgency=medium
+zeromq3 (4.0.4+dfsg-1) unstable; urgency=medium
 
+  * QA upload; orphan the package
+    - Upload to unstable
   * New upstream release
+  * Update repack.stub script
+  * Drop 02_fix-exported-symbols.patch and 03_fix-s390-rdtsc.patch
+    (merged upstream)
 
- -- Alessandro Ghedini <ghedo@debian.org>  Sun, 16 Mar 2014 13:37:32 +0100
+ -- Alessandro Ghedini <ghedo@debian.org>  Sun, 16 Mar 2014 14:02:28 +0100
 
 zeromq3 (4.0.3+dfsg-1) experimental; urgency=medium
 
